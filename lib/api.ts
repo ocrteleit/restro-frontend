@@ -117,3 +117,26 @@ export function getUniqueCategories(items: MenuItem[]): Array<{ id: string; name
         name: category,
     }))
 }
+
+export async function getRestaurantName(restaurantId: string): Promise<{ name: string; location: string }> {
+    try {
+        const url = `${API_BASE_URL}/restaurants/${restaurantId}`
+
+        const response = await fetch(url, {
+            cache: "no-store", // Always fetch fresh data
+        })
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch restaurant: ${response.status}`)
+        }
+
+        const data = await response.json()
+        return { name: data.data.attributes.name, location: data.data.attributes.location }
+    } catch (error) {
+        console.error("Error fetching restaurant name:", error)
+        return {
+            name: "Unknown Restaurant", location: "Unknown Location"
+        }
+
+    }
+}

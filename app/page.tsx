@@ -1,4 +1,4 @@
-import { fetchMenuItems, getUniqueCategories, groupMenuItemsByCategory } from "@/lib/api";
+import { fetchMenuItems, getRestaurantName, getUniqueCategories, groupMenuItemsByCategory } from "@/lib/api";
 import RestaurantMenuClient from "./restaurant-menu-client";
 import { NextPage } from "next";
 
@@ -16,12 +16,14 @@ const RestaurantMenu: NextPage<PageProps> = async ({ searchParams }) => {
   const menuItems = await fetchMenuItems(restaurantId);
   const groupedMenu = groupMenuItemsByCategory(menuItems);
   const categories = getUniqueCategories(menuItems);
+  const restaurantName = await getRestaurantName(restaurantId);
 
   return (
     <RestaurantMenuClient
       initialMenuData={groupedMenu}
       initialCategories={categories}
       initialTableNumber={tableNumber}
+      initialName={restaurantName}
     />
   );
 };

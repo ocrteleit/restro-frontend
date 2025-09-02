@@ -14,13 +14,15 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
 interface RestaurantMenuClientProps {
     initialMenuData: { [key: string]: MenuItem[] }
     initialCategories: Array<{ id: string; name: string }>
-    initialTableNumber: string
+    initialTableNumber: string,
+    initialName: { name: string; location: string }
 }
 
 export default function RestaurantMenuClient({
     initialMenuData,
     initialCategories,
     initialTableNumber,
+    initialName,
 }: RestaurantMenuClientProps) {
     const [tableNumber] = useState<string>(initialTableNumber)
     const [searchTerm, setSearchTerm] = useState("")
@@ -102,8 +104,8 @@ export default function RestaurantMenuClient({
         <div className="min-h-screen bg-slate-50 pb-24">
             {/* Header */}
             <header className="bg-white border-b p-4 text-center">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Dakshinkali Restaurant</h1>
-                <p className="text-sm text-gray-600">Authentic flavors, fresh ingredients</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{initialName.name}</h1>
+                <p className="text-sm text-gray-600">{initialName.location}</p>
                 {tableNumber != "Unknown" && (
                     <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
                         <MapPin className="w-3 h-3" />
