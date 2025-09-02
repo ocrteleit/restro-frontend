@@ -101,7 +101,7 @@ export default function RestaurantMenuClient({
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24">
+        <div className="min-h-screen  pb-24">
             {/* Header */}
             <header className="bg-white border-b p-4 text-center">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{initialName.name}</h1>
@@ -137,7 +137,7 @@ export default function RestaurantMenuClient({
                             key={category.id}
                             onClick={() => handleCategoryClick(category.id)}
                             className={`flex-1 px-2 py-2 text-xs md:text-sm font-medium rounded transition-colors duration-200 ${activeCategory === category.id
-                                ? "bg-gray-900 text-white"
+                                ? "bg-[#04BF45] text-white"
                                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                                 }`}
                         >
@@ -217,7 +217,7 @@ export default function RestaurantMenuClient({
                 <div className="flex gap-3 max-w-md mx-auto">
                     <Button
                         onClick={handleCallWaiter}
-                        className="flex-1 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                        className="flex-1  hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 bg-red-600"
                         size="lg"
                     >
                         <Phone className="w-4 h-4 mr-2" />
@@ -226,7 +226,7 @@ export default function RestaurantMenuClient({
                     <Button
                         onClick={handleAskForBill}
                         variant="outline"
-                        className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 bg-transparent"
+                        className="flex-1  hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 bg-[#04BF45]"
                         size="lg"
                     >
                         <Receipt className="w-4 h-4 mr-2" />
