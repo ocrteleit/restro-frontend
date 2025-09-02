@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
   images: {
 
     formats: ['image/webp', 'image/avif',],
-
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'restaurant-tms-strapi.onrender.com',
+      },
+    ],
 
   },
 
