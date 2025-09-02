@@ -130,15 +130,15 @@ export default function RestaurantMenuClient({
             </div>
 
             {/* Category Navigation */}
-            <div className="sticky top-14 z-30 bg-white border-b px-4 py-3">
-                <div className="flex gap-1 bg-gray-50 rounded-lg p-1 max-w-2xl mx-auto">
+            <div className="sticky top-16 z-30  border-b border-gray-100 px-4 py-4 ">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                     {initialCategories.map((category) => (
                         <button
                             key={category.id}
                             onClick={() => handleCategoryClick(category.id)}
-                            className={`flex-1 px-2 py-2 text-xs md:text-sm font-medium rounded transition-colors duration-200 ${activeCategory === category.id
-                                ? "bg-[#04BF45] text-white"
-                                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                            className={`flex-shrink-0 px-5 py-3 text-sm font-semibold rounded-xs transition-all duration-300 transform ${activeCategory === category.id
+                                ? "bg-gradient-to-r from-orange-500 to-orange-400 text-white  scale-105"
+                                : "bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-102"
                                 }`}
                         >
                             {category.name}
@@ -172,7 +172,7 @@ export default function RestaurantMenuClient({
                                     {items.map((item) => (
                                         <Card
                                             key={item.id}
-                                            className="group overflow-hidden hover:border-gray-300 transition-colors duration-200 shadow-xl pb-2"
+                                            className="group overflow-hidden hover:border-gray-300 transition-colors duration-200 shadow-xs pb-2 rounded-xs"
                                         >
                                             <div className="p-2">
                                                 <div className="relative mb-2">
@@ -213,25 +213,22 @@ export default function RestaurantMenuClient({
             </main>
 
             {/* Bottom Action Bar */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4">
-                <div className="flex gap-3 max-w-md mx-auto">
-                    <Button
+            <div className="fixed bottom-0 left-0 right-0  border-t border-gray-200/60 p-4 shadow-none">
+                <div className="flex justify-between items-center gap-4">
+                    <button
                         onClick={handleCallWaiter}
-                        className="flex-1  hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 bg-red-600"
-                        size="lg"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl border-2 border-gray-300 text-gray-800 text-base font-semibold transition-all duration-300 hover:border-gray-400 hover:bg-gray-50 active:scale-95"
                     >
-                        <Phone className="w-4 h-4 mr-2" />
-                        Call Waiter
-                    </Button>
-                    <Button
+                        <Phone className="w-5 h-5" />
+                        <span>Call Waiter</span>
+                    </button>
+                    <button
                         onClick={handleAskForBill}
-                        variant="outline"
-                        className="flex-1  hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 bg-[#04BF45]"
-                        size="lg"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 text-white text-base font-semibold  transition-all duration-300 hover:shadow-xl active:scale-95"
                     >
-                        <Receipt className="w-4 h-4 mr-2" />
-                        Ask for Bill
-                    </Button>
+                        <Receipt className="w-5 h-5" />
+                        <span>Ask for Bill</span>
+                    </button>
                 </div>
             </div>
         </div>
