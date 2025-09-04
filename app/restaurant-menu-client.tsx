@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import { Search, Phone, Receipt, MapPin } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import type { MenuItem } from "@/lib/api"
+import { updateTableStatus } from "@/lib/tableService"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
     return <div className={`bg-white border border-gray-200 rounded-lg ${className || ""}`} {...props} />
@@ -79,10 +80,12 @@ export default function RestaurantMenuClient({
     )
 
     const handleCallWaiter = () => {
-        alert(`Waiter has been called for Table ${tableNumber}! They will be with you shortly.`)
+        updateTableStatus(7, 'assistant');
+        alert(`Waiter request sent for Table ${tableNumber}! A staff member will assist you shortly.`)
     }
 
     const handleAskForBill = () => {
+        updateTableStatus(7, 'pay');
         alert(`Bill request sent for Table ${tableNumber}! Your bill will be prepared shortly.`)
     }
 
@@ -100,7 +103,7 @@ export default function RestaurantMenuClient({
     }
 
     return (
-        <div className="min-h-screen  pb-24">
+        <div className="min-h-screen pb-24">
             {/* Header */}
             <header className="bg-white border-b p-4 text-center">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{initialName.name}</h1>
@@ -129,15 +132,15 @@ export default function RestaurantMenuClient({
             </div>
 
             {/* Category Navigation */}
-            <div className="sticky top-16 z-30  border-b border-gray-100 px-4 py-4 ">
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            <div className="sticky top-16 z-30 bg-white border-b border-gray-100 px-4 py-4 ">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 justify-center mx-auto content-center items-center">
                     {initialCategories.map((category) => (
                         <button
                             key={category.id}
                             onClick={() => handleCategoryClick(category.id)}
                             className={`flex-shrink-0 px-5 py-3 text-sm font-semibold rounded-xs transition-all duration-300 transform ${activeCategory === category.id
-                                ? "bg-gradient-to-r from-orange-500 to-orange-400 text-white  scale-105"
-                                : "bg-gray-100/80 text-gray-700 hover:bg-gray-200/80 hover:scale-102"
+                                ? "bg-gradient-to-r from-orange-500 to-orange-400 text-white scale-105"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-102"
                                 }`}
                         >
                             {category.name}
@@ -164,7 +167,7 @@ export default function RestaurantMenuClient({
                             >
                                 <div className="flex items-center gap-3">
                                     <h2 className="text-xl md:text-2xl font-bold text-gray-900 capitalize">{category.name}</h2>
-                                    <div className="flex-1 h-px bg-gradient-to-r from-orange-200 to-transparent"></div>
+                                    <div className="flex-1 h-px bg-gradient-to-r "></div>
                                 </div>
 
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
@@ -212,7 +215,7 @@ export default function RestaurantMenuClient({
             </main>
 
             {/* Bottom Action Bar */}
-            <div className="fixed bottom-0 left-0 right-0  border-t border-gray-200/60 p-4 shadow-none">
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
                 <div className="flex justify-between items-center gap-4">
                     <button
                         onClick={handleCallWaiter}
@@ -223,7 +226,7 @@ export default function RestaurantMenuClient({
                     </button>
                     <button
                         onClick={handleAskForBill}
-                        className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 text-white text-base font-semibold  transition-all duration-300 hover:shadow-xl active:scale-95"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-400 text-white text-base font-semibold transition-all duration-300 hover:shadow-xl active:scale-95"
                     >
                         <Receipt className="w-5 h-5" />
                         <span>Ask for Bill</span>

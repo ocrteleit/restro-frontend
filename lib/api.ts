@@ -47,7 +47,7 @@ export interface ApiResponse {
     }
 }
 
-const API_BASE_URL = "https://restaurant-tms-strapi.onrender.com/api"
+export const API_BASE_URL = "https://restaurant-tms-strapi.onrender.com/api"
 
 export async function fetchMenuItems(restaurantId = "5"): Promise<MenuItem[]> {
     try {
