@@ -1,65 +1,88 @@
-import { API_BASE_URL } from "./api"
+// Table service utilities for restaurant management
 
-export interface TableStatusResponse {
-    success: boolean
-    message: string
-    data?: unknown
+export type TableStatus =
+  | "available"
+  | "occupied"
+  | "assistant"
+  | "pay"
+  | "cleaning";
+
+export interface TableInfo {
+  id: number;
+  status: TableStatus;
+  lastUpdated: Date;
+  customerCount?: number;
 }
 
-export type TableStatus = 'pay' | 'assistant' | 'available' | 'occupied'
+// Mock table data storage (in a real app, this would be a database)
+const tableData: { [key: number]: TableInfo } = {
+  1: { id: 1, status: "available", lastUpdated: new Date() },
+  2: { id: 2, status: "occupied", lastUpdated: new Date() },
+  3: { id: 3, status: "available", lastUpdated: new Date() },
+  4: { id: 4, status: "occupied", lastUpdated: new Date() },
+  5: { id: 5, status: "cleaning", lastUpdated: new Date() },
+  6: { id: 6, status: "available", lastUpdated: new Date() },
+  7: { id: 7, status: "occupied", lastUpdated: new Date() },
+  8: { id: 8, status: "available", lastUpdated: new Date() },
+};
 
+/**
+ * Updates the status of a specific table
+ * @param tableId - The ID of the table to update
+ * @param status - The new status for the table
+ * @returns Promise<boolean> - Success status of the update
+ */
+export async function updateTableStatus(
+  tableId: number,
+  status: TableStatus
+): Promise<boolean> {
+  try {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-export async function updateTableStatus(tableId: number, status: TableStatus): Promise<TableStatusResponse> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/tables/${tableId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                data: {
-                    statuss: status,
-                },
-            }),
-        })
+    if (tableData[tableId]) {
+      tableData[tableId] = {
+        ...tableData[tableId],
+        status,
+        lastUpdated: new Date(),
+      };
 
-        const data = await response.json()
+      // Log the status change for debugging
+      console.log(`Table ${tableId} status updated to: ${status}`);
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to update table status')
-        }
-
-        return data
-    } catch (error) {
-        console.error('Error updating table status:', error)
-        throw error
+      return true;
+    } else {
+      console.error(`Table ${tableId} not found`);
+      return false;
     }
+  } catch (error) {
+    console.error("Error updating table status:", error);
+    return false;
+  }
 }
 
 /**
- * Call waiter for a specific table
+ * Gets the current status of a table
+ * @param tableId - The ID of the table to check
+ * @returns TableInfo | null - Table information or null if not found
  */
-export async function callWaiter(tableId: number): Promise<TableStatusResponse> {
-    return updateTableStatus(tableId, 'assistant')
+export function getTableStatus(tableId: number): TableInfo | null {
+  return tableData[tableId] || null;
 }
 
 /**
- * Request bill for a specific table
+ * Gets all table statuses
+ * @returns TableInfo[] - Array of all table information
  */
-export async function requestBill(tableId: number): Promise<TableStatusResponse> {
-    return updateTableStatus(tableId, 'pay')
+export function getAllTableStatuses(): TableInfo[] {
+  return Object.values(tableData);
 }
 
 /**
- * Mark table as available
+ * Resets a table to available status
+ * @param tableId - The ID of the table to reset
+ * @returns Promise<boolean> - Success status of the reset
  */
-export async function markTableAvailable(tableId: number): Promise<TableStatusResponse> {
-    return updateTableStatus(tableId, 'available')
-}
-
-/**
- * Mark table as occupied
- */
-export async function markTableOccupied(tableId: number): Promise<TableStatusResponse> {
-    return updateTableStatus(tableId, 'occupied')
+export async function resetTable(tableId: number): Promise<boolean> {
+  return updateTableStatus(tableId, "available");
 }

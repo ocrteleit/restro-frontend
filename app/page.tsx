@@ -1,31 +1,6 @@
-import { fetchMenuItems, getRestaurantName, getUniqueCategories, groupMenuItemsByCategory } from "@/lib/api";
-import RestaurantMenuClient from "./restaurant-menu-client";
-import { NextPage } from "next";
+import { redirect } from "next/navigation";
 
-// Define the expected type for searchParams
-interface PageProps {
-  searchParams?: Promise<{ table?: string; restaurant?: string }>;
+export default function HomePage() {
+  console.log("first");
+  redirect("/5/7");
 }
-
-const RestaurantMenu: NextPage<PageProps> = async ({ searchParams }) => {
-  // Await the searchParams to resolve the Promise
-  const resolvedSearchParams = await searchParams;
-  const restaurantId = resolvedSearchParams?.restaurant ?? "5";
-  const tableNumber = resolvedSearchParams?.table ?? "Unknown";
-
-  const menuItems = await fetchMenuItems(restaurantId);
-  const groupedMenu = groupMenuItemsByCategory(menuItems);
-  const categories = getUniqueCategories(menuItems);
-  const restaurantName = await getRestaurantName(restaurantId);
-
-  return (
-    <RestaurantMenuClient
-      initialMenuData={groupedMenu}
-      initialCategories={categories}
-      initialTableNumber={tableNumber}
-      initialName={restaurantName}
-    />
-  );
-};
-
-export default RestaurantMenu;
