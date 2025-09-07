@@ -1,13 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import RestaurantMenuClient from "@/components/restaurant-menu-client";
 
-interface PageProps {
-  params: {
-    restaurantId: string;
-    tableId: string;
-  };
-}
-
-export default function RestaurantPage({ params }: PageProps) {
+export default function RestaurantPage({ params }: any) {
   const { restaurantId, tableId } = params;
 
   return <RestaurantMenuClient restaurantId={restaurantId} tableId={tableId} />;
