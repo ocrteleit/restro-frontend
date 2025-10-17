@@ -21,6 +21,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Star,
+  ShoppingCart,
+  Plus,
+  Minus,
+  Trash2,
+  Send,
+  AlertCircle,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,6 +36,16 @@ import {
   getUniqueCategories,
 } from "@/lib/api";
 import { callWaiterMutation, requestBillMutation } from "@/lib/table-service";
+import {
+  createOrderMutation,
+  addOrderItemMutation,
+  updateOrderItemMutation,
+  removeOrderItemMutation,
+  submitOrderMutation,
+  calculateOrderTotal,
+  getActiveOrder,
+  getOrderItems,
+} from "@/lib/cart-api";
 import LoadingScreen from "./loading-screen";
 
 function Card({ className, ...props }) {
@@ -64,6 +80,28 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   const { trigger: triggerRequestBill, isMutating: billLoading } =
     useSWRMutation("request-bill", requestBillMutation);
 
+  // Cart mutations
+  const { trigger: triggerCreateOrder } = useSWRMutation(
+    "create-order",
+    createOrderMutation
+  );
+  const { trigger: triggerAddOrderItem } = useSWRMutation(
+    "add-order-item",
+    addOrderItemMutation
+  );
+  const { trigger: triggerUpdateOrderItem } = useSWRMutation(
+    "update-order-item",
+    updateOrderItemMutation
+  );
+  const { trigger: triggerRemoveOrderItem } = useSWRMutation(
+    "remove-order-item",
+    removeOrderItemMutation
+  );
+  const { trigger: triggerSubmitOrder } = useSWRMutation(
+    "submit-order",
+    submitOrderMutation
+  );
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const [viewMode, setViewMode] = useState("grid");
@@ -76,6 +114,16 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   const [imageGalleryOpen, setImageGalleryOpen] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Cart state
+  const [cartOpen, setCartOpen] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [orderSubmitting, setOrderSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [showAddToCartToast, setShowAddToCartToast] = useState(false);
+  const [lastAddedItem, setLastAddedItem] = useState(null);
 
   const sectionRefs = useRef({});
   const observerRef = useRef(null);
@@ -265,6 +313,189 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     }
   };
 
+  // Load active order and cart items on mount
+  useEffect(() => {
+    const loadActiveOrder = async () => {
+      if (!tableId) return;
+
+      try {
+        setCartLoading(true);
+        const order = await getActiveOrder(tableId);
+
+        if (order) {
+          setCurrentOrder(order);
+          const items = await getOrderItems(order.id);
+          setCartItems(items);
+        }
+      } catch (error) {
+        console.error("Error loading active order:", error);
+      } finally {
+        setCartLoading(false);
+      }
+    };
+
+    loadActiveOrder();
+  }, [tableId]);
+
+  // Add item to cart
+  const handleAddToCart = async (menuItem) => {
+    try {
+      setCartLoading(true);
+
+      // Create order if doesn't exist
+      let orderId = currentOrder?.id;
+      if (!orderId) {
+        const newOrder = await triggerCreateOrder({
+          tableId,
+          restaurantId,
+        });
+        setCurrentOrder(newOrder);
+        orderId = newOrder.id;
+      }
+
+      // Check if item already in cart
+      const existingItem = cartItems.find(
+        (item) => item.attributes.menu_item.data.id === menuItem.id
+      );
+
+      if (existingItem) {
+        // Update quantity
+        const newQuantity = parseInt(existingItem.attributes.quantity) + 1;
+        await triggerUpdateOrderItem({
+          orderItemId: existingItem.id,
+          quantity: newQuantity,
+        });
+
+        // Update local state
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item.id === existingItem.id
+              ? {
+                  ...item,
+                  attributes: {
+                    ...item.attributes,
+                    quantity: String(newQuantity),
+                  },
+                }
+              : item
+          )
+        );
+      } else {
+        // Add new item
+        const newItem = await triggerAddOrderItem({
+          orderId,
+          menuItemId: menuItem.id,
+          quantity: 1,
+          price: menuItem.price,
+        });
+
+        // Fetch complete item data with menu_item populated
+        const items = await getOrderItems(orderId);
+        setCartItems(items);
+      }
+
+      // Show success toast
+      setLastAddedItem(menuItem);
+      setShowAddToCartToast(true);
+      setTimeout(() => {
+        setShowAddToCartToast(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart. Please try again.");
+    } finally {
+      setCartLoading(false);
+    }
+  };
+
+  // Update item quantity in cart
+  const handleUpdateQuantity = async (orderItem, newQuantity) => {
+    if (newQuantity < 1) {
+      handleRemoveFromCart(orderItem);
+      return;
+    }
+
+    try {
+      await triggerUpdateOrderItem({
+        orderItemId: orderItem.id,
+        quantity: newQuantity,
+      });
+
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === orderItem.id
+            ? {
+                ...item,
+                attributes: {
+                  ...item.attributes,
+                  quantity: String(newQuantity),
+                },
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      alert("Failed to update quantity. Please try again.");
+    }
+  };
+
+  // Remove item from cart
+  const handleRemoveFromCart = async (orderItem) => {
+    try {
+      await triggerRemoveOrderItem({ orderItemId: orderItem.id });
+
+      const updatedItems = cartItems.filter((item) => item.id !== orderItem.id);
+      setCartItems(updatedItems);
+
+      // If cart is empty, clear order
+      if (updatedItems.length === 0) {
+        setCurrentOrder(null);
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+      alert("Failed to remove item. Please try again.");
+    }
+  };
+
+  // Submit order
+  const handleSubmitOrder = async () => {
+    if (!currentOrder || cartItems.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    try {
+      setOrderSubmitting(true);
+      // await triggerSubmitOrder({
+      //   orderId: currentOrder.id,
+      //   tableId,
+      // });
+
+      // Show success animation
+      setOrderSuccess(true);
+
+      setTimeout(() => {
+        setCartOpen(false);
+        setOrderSuccess(false);
+        setCurrentOrder(null);
+        setCartItems([]);
+      }, 3000);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      alert("Failed to submit order. Please try again.");
+    } finally {
+      setOrderSubmitting(false);
+    }
+  };
+
+  // Calculate cart total
+  const cartTotal = calculateOrderTotal(cartItems);
+  const cartItemCount = cartItems.reduce(
+    (total, item) => total + parseInt(item.attributes?.quantity || 0),
+    0
+  );
+
   if (restaurantLoading || menuLoading) {
     return <LoadingScreen />;
   }
@@ -332,6 +563,46 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
           </div>
         </div>
       </motion.header>
+      <div className=" flex md:hidden justify-center py-2 items-center gap-3">
+        <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200/50">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`p-3 rounded-xl transition-all duration-200 ${
+              viewMode === "grid"
+                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            <Grid3X3 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`p-3 rounded-xl transition-all duration-200 ${
+              viewMode === "list"
+                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
+
+        <button
+          onClick={handleEyeClick}
+          className={`p-3 rounded-2xl transition-all duration-200 shadow-lg border border-gray-200/50 ${
+            showImages
+              ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-xl"
+              : "bg-white/80 backdrop-blur-sm text-gray-500 hover:text-gray-700"
+          }`}
+          title={showImages ? "View image gallery" : "Show images"}
+        >
+          {showImages ? (
+            <Eye className="w-4 h-4" />
+          ) : (
+            <EyeOff className="w-4 h-4" />
+          )}
+        </button>
+      </div>
 
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/50 px-4 py-4 shadow-sm">
         <div className="relative max-w-md mx-auto">
@@ -370,7 +641,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="md:flex hidden items-center gap-3">
             <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200/50">
               <button
                 onClick={() => setViewMode("grid")}
@@ -521,6 +792,19 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                                 {item.description}
                               </p>
                             )}
+
+                            {/* Add to Cart Button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(item);
+                              }}
+                              disabled={cartLoading}
+                              className="w-full mt-2 py-2 px-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs font-semibold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Plus className="w-3 h-3" />
+                              Add to Cart
+                            </button>
                           </div>
                         </div>
                       </Card>
@@ -761,6 +1045,241 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Add to Cart Toast Notification */}
+      <AnimatePresence>
+        {showAddToCartToast && lastAddedItem && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-32 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 max-w-sm"
+          >
+            <CheckCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="font-semibold text-sm">Added to cart!</p>
+              <p className="text-xs text-white/90">{lastAddedItem.name}</p>
+            </div>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors"
+            >
+              View
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Cart Button */}
+      <motion.button
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.5, type: "spring" }}
+        onClick={() => setCartOpen(true)}
+        className="fixed bottom-24 right-4 sm:right-6 z-40 w-16 h-16 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-full shadow-2xl hover:shadow-3xl active:scale-95 transition-all duration-300 flex items-center justify-center group hover:from-orange-600 hover:to-pink-600"
+      >
+        <ShoppingCart className="w-7 h-7 group-hover:scale-110 transition-transform duration-200" />
+        {cartItemCount > 0 && (
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
+          >
+            {cartItemCount}
+          </motion.span>
+        )}
+      </motion.button>
+
+      {/* Cart Drawer */}
+      <AnimatePresence>
+        {cartOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setCartOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            />
+
+            {/* Cart Drawer */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col"
+            >
+              {/* Cart Header */}
+              <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <ShoppingCart className="w-6 h-6" />
+                  <div>
+                    <h2 className="text-xl font-bold">Your Cart</h2>
+                    <p className="text-sm text-white/80">
+                      {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCartOpen(false)}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Cart Items */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {cartItems.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                    <ShoppingCart className="w-16 h-16 mb-4 opacity-50" />
+                    <p className="text-lg font-semibold">Your cart is empty</p>
+                    <p className="text-sm">Add some delicious items!</p>
+                  </div>
+                ) : (
+                  cartItems.map((orderItem) => {
+                    const menuItem = orderItem.attributes?.menu_item?.data;
+                    const quantity = parseInt(
+                      orderItem.attributes?.quantity || 0
+                    );
+                    const price = parseFloat(orderItem.attributes?.price || 0);
+                    const itemTotal = quantity * price;
+
+                    return (
+                      <motion.div
+                        key={orderItem.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm"
+                      >
+                        <div className="flex gap-3">
+                          {/* Item Image */}
+                          {menuItem?.attributes?.image?.data?.attributes
+                            ?.url && (
+                            <img
+                              src={
+                                menuItem.attributes.image.data.attributes.url
+                              }
+                              alt={menuItem.attributes.name}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                          )}
+
+                          {/* Item Details */}
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900 text-sm">
+                              {menuItem?.attributes?.name || "Unknown Item"}
+                            </h3>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Rs. {price} each
+                            </p>
+
+                            {/* Quantity Controls */}
+                            <div className="flex items-center gap-2 mt-2">
+                              <button
+                                onClick={() =>
+                                  handleUpdateQuantity(orderItem, quantity - 1)
+                                }
+                                className="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="w-8 text-center font-semibold">
+                                {quantity}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleUpdateQuantity(orderItem, quantity + 1)
+                                }
+                                className="w-7 h-7 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-lg flex items-center justify-center hover:from-orange-600 hover:to-pink-600 transition-colors"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => handleRemoveFromCart(orderItem)}
+                                className="ml-auto w-7 h-7 bg-red-50 hover:bg-red-100 text-red-500 rounded-lg flex items-center justify-center transition-colors"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Item Total */}
+                          <div className="text-right">
+                            <p className="font-bold text-gray-900">
+                              Rs. {itemTotal.toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Cart Footer */}
+              {cartItems.length > 0 && (
+                <div className="border-t border-gray-200 p-4 bg-gray-50 space-y-3">
+                  {/* Order Details */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="font-semibold">
+                        Rs. {cartTotal.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span className="text-orange-600">
+                        Rs. {cartTotal.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Order Info */}
+                  {currentOrder && (
+                    <div className="text-xs text-gray-500 bg-blue-50 border border-blue-200 rounded-lg p-2">
+                      <div className="flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>
+                          Order #{currentOrder.attributes?.order_number}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <button
+                    onClick={handleSubmitOrder}
+                    disabled={orderSubmitting || cartItems.length === 0}
+                    className="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {orderSubmitting ? (
+                      <>
+                        <Clock className="w-5 h-5 animate-spin" />
+                        Placing Order...
+                      </>
+                    ) : orderSuccess ? (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Order Placed!
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        Place Order
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
