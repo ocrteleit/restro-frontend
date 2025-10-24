@@ -467,10 +467,10 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
 
     try {
       setOrderSubmitting(true);
-      // await triggerSubmitOrder({
-      //   orderId: currentOrder.id,
-      //   tableId,
-      // });
+      await triggerSubmitOrder({
+        orderId: currentOrder.id,
+        tableId,
+      });
 
       // Show success animation
       setOrderSuccess(true);
