@@ -12,6 +12,8 @@ import {
   Grid3X3,
   List,
   Eye,
+  Utensils,
+  PhoneCall,
   EyeOff,
   ImageIcon,
   CheckCircle,
@@ -522,54 +524,93 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   }
 
   return (
-    <div className="min-h-screen pb-24 bg-gradient-to-br from-orange-50 via-white to-pink-50">
+    <div className="min-h-screen pb-24 bg-gradient-to-br from-gray-50 via-slate to-gray-50">
       <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white p-4 sm:p-6 text-center shadow-xl"
-      >
-        <div className="relative">
-          <div className="absolute inset-0 bg-black/10 rounded-3xl"></div>
-          <div className="relative z-10 space-y-3 p-5">
-            <motion.h1
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-2xl sm:text-3xl md:text-4xl font-bold animate-fade-in bg-white/20 backdrop-blur-sm rounded-2xl py-3 px-6 inline-block"
-            >
-              {restaurant?.name || "Loading..."}
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex items-center justify-center gap-2 text-white/90 animate-fade-in animation-delay-100"
-            >
-              <MapPin className="w-4 h-4" />
-              <span className="text-sm sm:text-base">
-                {restaurant?.location || "Restaurant Location"}
-              </span>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium animate-fade-in animation-delay-200"
-            >
-              <Star className="w-4 h-4 text-yellow-300" />
-              Table {tableId}
-            </motion.div>
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="relative bg-gradient-to-br from-gray-950 via-slate-900 to-gray-800 text-white p-6 sm:p-10 shadow-2xl border-b border-white/10  overflow-hidden"
+    >
+      {/* Background depth layers */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-white/5 to-transparent" />
+        <div className="absolute bottom-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent" />
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm " />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 items-center text-center sm:text-left">
+        
+        {/* Column 1: Restaurant Name */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="space-y-2"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-lg">
+            {restaurant?.name || "The Signature Table"}
+          </h1>
+          <p className="text-gray-400 text-sm sm:text-base font-light tracking-wide">
+            Fine Dining & Gourmet Experience
+          </p>
+        </motion.div>
+
+        {/* Column 2: Location + Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="flex flex-col items-center justify-center gap-3"
+        >
+          <div className="flex items-center gap-2 text-gray-300 text-sm sm:text-base max-w-[260px]">
+            <MapPin className="w-4 h-4 text-sky-400" />
+            <span className="truncate">{restaurant?.location || "Kathmandu, Nepal"}</span>
           </div>
-        </div>
-      </motion.header>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full text-sm sm:text-base font-medium border border-white/10 text-yellow-300 shadow-sm">
+            <Star className="w-4 h-4 text-yellow-400" />
+            Table {tableId || "01"}
+          </div>
+        </motion.div>
+
+        {/* Column 3: Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="flex flex-col items-center sm:items-end justify-center text-gray-300 font-medium"
+        >
+          {/* Desktop: vertical stack */}
+          <div className="hidden sm:flex flex-col gap-2">
+            <span className="pl-8 text-sm sm:text-base leading-relaxed block text-gray-200">
+              "Place Order"
+            </span>
+            <span className="pl-16 text-sm sm:text-base leading-relaxed block text-gray-200">
+              "Call Waiter"
+            </span>
+            <span className="pl-24 text-sm sm:text-base leading-relaxed block text-gray-200">
+              "Get Bill"
+            </span>
+          </div>
+
+          {/* Mobile & Tablet: 3-column layout */}
+          <div className="grid grid-cols-3 gap-4 w-full sm:hidden mt-4">
+            <span className="text-center text-sm text-gray-200">Place Order</span>
+            <span className="text-center text-sm text-gray-200">Call Waiter</span>
+            <span className="text-center text-sm text-gray-200">Get Bill</span>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Bottom subtle divider */}
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent shadow-sm" />
+    </motion.header>
       <div className=" flex md:hidden justify-center py-2 items-center gap-3">
         <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200/50">
           <button
             onClick={() => setViewMode("grid")}
             className={`p-3 rounded-xl transition-all duration-200 ${
               viewMode === "grid"
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                ? "bg-gradient-to-br from-gray-950 via-slate-900 to-gray-800 text-white shadow-lg"
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
@@ -579,7 +620,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             onClick={() => setViewMode("list")}
             className={`p-3 rounded-xl transition-all duration-200 ${
               viewMode === "list"
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                ? "bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 text-white shadow-lg"
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
             }`}
           >
@@ -589,9 +630,9 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
 
         <button
           onClick={handleEyeClick}
-          className={`p-3 rounded-2xl transition-all duration-200 shadow-lg border border-gray-200/50 ${
+          className={`p-3 rounded-2xl transition-all duration-200 shadow-lg border border-gray-800/50 ${
             showImages
-              ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-xl"
+              ? "bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 text-white shadow-xl"
               : "bg-white/80 backdrop-blur-sm text-gray-500 hover:text-gray-700"
           }`}
           title={showImages ? "View image gallery" : "Show images"}
@@ -606,7 +647,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
 
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/50 px-4 py-4 shadow-sm">
         <div className="relative max-w-md mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 rounded-2xl blur-sm opacity-20"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 rounded-2xl blur-sm opacity-20"></div>
           <div className="relative bg-white rounded-2xl shadow-lg">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
@@ -614,7 +655,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               placeholder="Search delicious items..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 text-base bg-transparent border-0 focus:ring-2 focus:ring-orange-400/50 rounded-2xl"
+              className="pl-12 pr-4 py-3 text-base bg-transparent border-0 focus:ring-2 focus:ring-gray-400/50 rounded-2xl"
             />
           </div>
         </div>
@@ -632,8 +673,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 onClick={() => handleCategoryClick(category.id)}
                 className={`flex-shrink-0 px-6 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
                   activeCategory === category.id
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white scale-105 shadow-xl"
-                    : "bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100 hover:text-orange-600 border border-gray-200/50"
+                    ? "bg-gradient-to-r from-gray-900 via-slate-800 to-gray-700 text-white scale-105 shadow-xl"
+                    : "bg-white/80 backdrop-blur-sm text-gray-800 hover:bg-gradient-to-r hover:from-gray-200 hover:via-slate-150 hover:to-gray-100 hover:text-slate-600 border border-gray-200/50"
                 }`}
               >
                 {category.name}
@@ -647,7 +688,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 onClick={() => setViewMode("grid")}
                 className={`p-3 rounded-xl transition-all duration-200 ${
                   viewMode === "grid"
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                    ? "bg-gradient-to-r from-gray-900 via-slate-800 to-gray-700 text-white shadow-lg"
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                 }`}
               >
@@ -657,7 +698,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 onClick={() => setViewMode("list")}
                 className={`p-3 rounded-xl transition-all duration-200 ${
                   viewMode === "list"
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
+                    ? "bg-gradient-to-r  from-gray-900 via-slate-800 to-gray-700 text-white shadow-lg"
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                 }`}
               >
@@ -669,7 +710,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               onClick={handleEyeClick}
               className={`p-3 rounded-2xl transition-all duration-200 shadow-lg border border-gray-200/50 ${
                 showImages
-                  ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-xl"
+                  ? "bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 text-white shadow-xl"
                   : "bg-white/80 backdrop-blur-sm text-gray-500 hover:text-gray-700"
               }`}
               title={showImages ? "View image gallery" : "Show images"}
@@ -700,10 +741,10 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 className="space-y-4"
               >
                 <div className="flex items-center gap-4">
-                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent capitalize">
+                  <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent capitalize p-3">
                     {category.name}
                   </h2>
-                  <div className="flex-1 h-px bg-gradient-to-r from-orange-200 via-pink-200 to-transparent"></div>
+                  <div className="flex-1 h-px  bg-gradient-to-r from-gray-800 via-gray-600 to-transparent"></div>
                 </div>
 
                 <div
@@ -722,7 +763,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                     >
                       <Card
                         data-item-id={`${category.id}-${item.id}`}
-                        className={`group overflow-hidden hover:border-orange-300/50 transition-all duration-300 hover:shadow-2xl pb-3 transform hover:scale-105 hover:-translate-y-1 ${
+                        className={`group overflow-hidden hover:border-gray-300/50 transition-all duration-300 hover:shadow-2xl pb-3 transform hover:scale-105 hover:-translate-y-1 ${
                           isVisible[`${category.id}-${item.id}`]
                             ? "animate-slide-up opacity-100"
                             : "animate-slide-up opacity-100"
@@ -758,7 +799,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
 
                           {showImages && !item.image && (
                             <div
-                              className={`flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl ${
+                              className={`flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl p-1 ${
                                 viewMode === "list"
                                   ? "w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0"
                                   : "mb-3 h-32 sm:h-36 md:h-40"
@@ -780,15 +821,15 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                             }`}
                           >
                             <div className="flex justify-between items-start gap-2">
-                              <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2 group-hover:text-orange-600 transition-colors duration-200">
+                              <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2 group-hover:text-gray-600 transition-colors duration-200">
                                 {item.name}
                               </h3>
-                              <span className="text-white font-bold text-sm whitespace-nowrap bg-gradient-to-r from-orange-500 to-pink-500 px-3 py-1 rounded-full shadow-lg">
+                              <span className="text-white font-bold text-sm whitespace-nowrap bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 px-3 py-1 rounded-full shadow-lg">
                                 Rs. {item.price}
                               </span>
                             </div>
                             {item.description && viewMode === "list" && (
-                              <p className="text-xs text-gray-600 line-clamp-2 group-hover:text-gray-800 transition-colors duration-200">
+                              <p className="text-xs text-gray-600 line-clamp-2 group-hover:text-gray-800 transition-colors  duration-200">
                                 {item.description}
                               </p>
                             )}
@@ -800,7 +841,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                                 handleAddToCart(item);
                               }}
                               disabled={cartLoading}
-                              className="w-full mt-2 py-2 px-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-xs font-semibold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="w-full mt-2 py-2 px-3 bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 text-white text-xs font-semibold rounded-xl hover:from-gray-600 hover:to-gray-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <Plus className="w-3 h-3" />
                               Add to Cart
@@ -911,7 +952,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-gradient-to-br from-orange-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-md flex items-center justify-center"
+            className="fixed inset-0 z-50 bg-gradient-to-br from-gray-500/20 via-purple-500/20 to-gray-500/20 backdrop-blur-md flex items-center justify-center"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -921,7 +962,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             >
               <div className="text-center space-y-6">
                 <div className="relative">
-                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-24 h-24 mx-auto bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center shadow-lg">
                     {animationType === "waiter" ? (
                       <Phone className="w-12 h-12 text-white animate-pulse" />
                     ) : (
@@ -929,9 +970,9 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                     )}
                   </div>
                   <div className="absolute inset-0 w-24 h-24 mx-auto">
-                    <div className="absolute inset-0 bg-orange-400/30 rounded-full animate-ping"></div>
-                    <div className="absolute inset-2 bg-orange-400/20 rounded-full animate-ping animation-delay-300"></div>
-                    <div className="absolute inset-4 bg-orange-400/10 rounded-full animate-ping animation-delay-600"></div>
+                    <div className="absolute inset-0 bg-gray-400/30 rounded-full animate-ping"></div>
+                    <div className="absolute inset-2 bg-gray-400/20 rounded-full animate-ping animation-delay-300"></div>
+                    <div className="absolute inset-4 bg-gray-400/10 rounded-full animate-ping animation-delay-600"></div>
                   </div>
                 </div>
 
@@ -973,12 +1014,12 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                       strokeDashoffset={`${
                         2 * Math.PI * 54 * (1 - animationProgress / 100)
                       }`}
-                      className="text-orange-500 transition-all duration-100 ease-linear"
+                      className="text-gray-500 transition-all duration-100 ease-linear"
                       strokeLinecap="round"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-2xl font-bold text-gray-600">
                       {Math.round(animationProgress)}%
                     </div>
                     <div className="text-xs text-gray-500 flex items-center gap-1">
@@ -1039,7 +1080,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
 
                 <div className="relative h-8 overflow-hidden rounded-b-3xl">
                   <div className="absolute bottom-0 left-0 w-full">
-                    <Waves className="w-full h-6 text-orange-200 animate-pulse" />
+                    <Waves className="w-full h-6 text-gray-200 animate-pulse" />
                   </div>
                 </div>
               </div>
@@ -1078,7 +1119,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
         animate={{ scale: 1 }}
         transition={{ delay: 0.5, type: "spring" }}
         onClick={() => setCartOpen(true)}
-        className="fixed bottom-24 right-4 sm:right-6 z-40 w-16 h-16 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-full shadow-2xl hover:shadow-3xl active:scale-95 transition-all duration-300 flex items-center justify-center group hover:from-orange-600 hover:to-pink-600"
+        className="fixed bottom-24 right-4 sm:right-6 z-40 w-16 h-16 bg-gradient-to-r from-gray-950 via-slate-900 to-gray-800 text-white rounded-full shadow-2xl hover:shadow-3xl active:scale-95 transition-all duration-300 flex items-center justify-center group hover:from-gray-600 hover:to-gray-600"
       >
         <ShoppingCart className="w-7 h-7 group-hover:scale-110 transition-transform duration-200" />
         {cartItemCount > 0 && (
@@ -1114,7 +1155,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               className="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col"
             >
               {/* Cart Header */}
-              <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-4 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-gray-500 to-gray-500 text-white p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <ShoppingCart className="w-6 h-6" />
                   <div>
@@ -1196,7 +1237,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                                 onClick={() =>
                                   handleUpdateQuantity(orderItem, quantity + 1)
                                 }
-                                className="w-7 h-7 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-lg flex items-center justify-center hover:from-orange-600 hover:to-pink-600 transition-colors"
+                                className="w-7 h-7 bg-gradient-to-r from-gray-500 to-gray-500 text-white rounded-lg flex items-center justify-center hover:from-gray-600 hover:to-gray-600 transition-colors"
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
@@ -1235,7 +1276,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                     </div>
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-orange-600">
+                      <span className="text-gray-600">
                         Rs. {cartTotal.toFixed(2)}
                       </span>
                     </div>
@@ -1257,7 +1298,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                   <button
                     onClick={handleSubmitOrder}
                     disabled={orderSubmitting || cartItems.length === 0}
-                    className="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-xl hover:from-orange-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-4 bg-gradient-to-r from-gray-500 to-gray-500 text-white font-bold rounded-xl hover:from-gray-600 hover:to-gray-600 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {orderSubmitting ? (
                       <>
@@ -1293,7 +1334,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
           <button
             onClick={handleCallWaiter}
             disabled={showWaiterAnimation || showBillAnimation}
-            className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl border-2 border-gray-300/50 bg-white/80 backdrop-blur-sm text-gray-800 font-semibold transition-all duration-300 hover:border-orange-400 hover:bg-gradient-to-r hover:from-orange-50 hover:to-pink-50 hover:text-orange-600 active:scale-95 hover:shadow-xl group disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl border-2 border-gray-300/50 bg-white/80 backdrop-blur-sm text-gray-800 font-semibold transition-all duration-300 hover:border-gray-400 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-50 hover:text-gray-600 active:scale-95 hover:shadow-xl group disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
             <Phone className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" />
             <span className="hidden xs:inline">Call Waiter</span>
@@ -1303,7 +1344,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
           <button
             onClick={handleAskForBill}
             disabled={showWaiterAnimation || showBillAnimation}
-            className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold transition-all duration-300 hover:from-orange-600 hover:to-pink-600 hover:shadow-2xl active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed shadow-xl"
+            className="flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-gradient-to-r from-gray-800 via-slate to-gray-600 text-white font-semibold transition-all duration-300 hover:from-gray-600 hover:via-slate hover:to-gray-800 hover:shadow-2xl active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed shadow-xl"
           >
             <Receipt className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" />
             <span className="hidden xs:inline">Ask for Bill</span>
