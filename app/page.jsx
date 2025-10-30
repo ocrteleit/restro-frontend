@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
+import RestaurantMenuClient from "@/components/restaurant-menu-client";
 
 export default function HomePage() {
-  console.log("first");
-  redirect("/5/7");
+  return <RestaurantMenuClient restaurantId="5" tableId="7" />;
 }
 
