@@ -535,7 +535,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   return (
     <div className="min-h-screen pb-24">
       <div className="px-4 py-4 sticky top-0 z-40 bg-[#F5F5F0]">
-        <div className="nb-card flex items-center justify-between">
+        <div className="max-w-3xl mx-auto">
+          <div className="nb-card flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">{restaurant?.name || "Loading..."}</h1>
             <p className="text-sm text-black/70 flex items-center gap-1"><MapPin className="w-4 h-4" />{restaurant?.location || "Restaurant Location"} • Table {tableId}</p>
@@ -546,6 +547,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               <span className="absolute -top-2 -right-2 nb-border rounded-full bg-yellow-300 text-xs font-bold w-6 h-6 flex items-center justify-center">{cartItemCount}</span>
             )}
           </button>
+          </div>
         </div>
       </div>
       <div className=" flex md:hidden justify-center py-2 items-center gap-3">
@@ -568,7 +570,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
       </div>
 
       <div className="sticky top-20 z-30 px-4 py-3">
-        <div className="relative max-w-md mx-auto">
+        <div className="relative max-w-3xl mx-auto">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black/60 h-5 w-5" />
             <Input
@@ -583,7 +585,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
       </div>
 
       <div className="sticky top-[calc(5rem+1px)] z-20 px-4 py-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 flex-1">
             {transformedCategories.map((category, index) => (
               <motion.button
@@ -618,7 +620,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
         </div>
       </div>
 
-      <main className="px-4 py-6 max-w-7xl mx-auto">
+      <main className="px-4 py-6 max-w-3xl mx-auto">
         <div className="space-y-8">
           {transformedCategories.map((category) => {
             const items = filteredMenu[category.id];
@@ -642,8 +644,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 <div
                   className={`${
                     viewMode === "grid"
-                      ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"
-                      : "space-y-3"
+                      ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3"
+                      : "space-y-2"
                   }`}
                 >
                   {items.map((item, index) => (
@@ -655,7 +657,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                     >
                       <Card
                         data-item-id={`${category.id}-${item.id}`}
-                        className={`group overflow-hidden nb-pressable pb-3 ${categoryAccent(category.id).border} ${
+                        className={`group overflow-hidden nb-pressable p-2 sm:p-3 ${categoryAccent(category.id).border} ${
                           isVisible[`${category.id}-${item.id}`]
                             ? "animate-slide-up opacity-100"
                             : "animate-slide-up opacity-100"
@@ -665,8 +667,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                         <div
                           className={`${
                             viewMode === "list"
-                              ? "flex items-center w-full p-4 gap-3"
-                              : "p-3"
+                              ? "flex items-center w-full p-3 gap-2"
+                              : "p-0"
                           }`}
                         >
                           {showImages && item.image && (
@@ -674,7 +676,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                               className={`relative overflow-hidden ${
                                 viewMode === "list"
                                   ? "w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl"
-                                  : "mb-3 rounded-xl"
+                                  : "mb-2 rounded-xl"
                               }`}
                             >
                               <img
@@ -683,7 +685,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                                 className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
                                   viewMode === "list"
                                     ? "w-full h-full"
-                                    : "w-full h-32 sm:h-36 md:h-40"
+                                  : "w-full h-24 sm:h-28 md:h-32"
                                 }`}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -695,7 +697,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                               className={`flex items-center justify-center rounded-xl ${categoryAccent(category.id).bg} nb-border ${
                                 viewMode === "list"
                                   ? "w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0"
-                                  : "mb-3 h-32 sm:h-36 md:h-40"
+                                  : "mb-2 h-24 sm:h-28 md:h-32"
                               }`}
                             >
                               <ImageIcon className="w-8 h-8 text-black" />
@@ -703,7 +705,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                           )}
 
                           {!showImages && viewMode === "grid" && (
-                            <div className="mb-3 flex items-center justify-center h-32 sm:h-36 md:h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
+                            <div className="mb-2 flex items-center justify-center h-24 sm:h-28 md:h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
                               <ImageIcon className="w-8 h-8 text-gray-400" />
                             </div>
                           )}
@@ -714,7 +716,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                             }`}
                           >
                             <div className="flex justify-between items-start gap-2">
-                              <h3 className="font-bold text-black text-sm leading-tight line-clamp-2">
+                              <h3 className="font-bold text-black text-sm leading-snug line-clamp-2">
                                 {item.name}
                               </h3>
                               <span className={`font-bold whitespace-nowrap nb-chip nb-chip-sm ${categoryAccent(category.id).chip}`}>
@@ -1213,7 +1215,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
       </AnimatePresence>
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#F5F5F0] nb-border-t">
-        <div className="max-w-md mx-auto grid grid-cols-2 gap-3">
+        <div className="max-w-3xl mx-auto grid grid-cols-2 gap-3">
           <button
             onClick={handleCallWaiter}
             disabled={showWaiterAnimation || showBillAnimation}
