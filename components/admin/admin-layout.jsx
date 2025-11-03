@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { removeAuthToken } from "@/lib/admin-api";
+import SignOutButton from "./SignOutButton";
 
 const navigation = [
   {
@@ -86,11 +87,6 @@ export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    removeAuthToken();
-    window.location.href = "/admin/login";
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar overlay */}
@@ -148,14 +144,10 @@ export default function AdminLayout({ children }) {
 
         {/* User section */}
         <div className="border-t border-gray-200 p-4">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
-            onClick={handleLogout}
-          >
+          <SignOutButton className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50">
             <LogOut className="w-5 h-5 mr-3" />
             Logout
-          </Button>
+          </SignOutButton>
         </div>
       </aside>
 

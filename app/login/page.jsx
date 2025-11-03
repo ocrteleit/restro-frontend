@@ -13,8 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setAuthToken } from "@/lib/admin-api";
 import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -22,29 +23,24 @@ export default function AdminLoginPage() {
     email: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  console.log("error", error);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // TODO: Replace with actual API call
-      // Simulating login
-      if (formData.email && formData.password) {
-        // For demo purposes, accept any credentials
-        const demoToken = "demo-admin-token-" + Date.now();
-        setAuthToken(demoToken);
-        toast.success("Login successful!");
-        router.push("/admin/dashboard");
-      } else {
-        toast.error("Please enter email and password");
-      }
-    } catch (error) {
-      toast.error("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
+    setLoading(true);
+    const res = await signIn("credentials", {
+      redirect: false,
+      username: formData.email,
+      password: formData.password,
+    });
+    if (res.error) toast.error("Invalid credentials or not an admin.");
+    else {
+      toast.success("Login successful!");
+      router.replace("/admin");
     }
+    setLoading(false);
   };
 
   return (
@@ -73,7 +69,7 @@ export default function AdminLoginPage() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 required
-                disabled={isLoading}
+                disabled={loading}
               />
             </div>
 
@@ -88,7 +84,7 @@ export default function AdminLoginPage() {
                   setFormData({ ...formData, password: e.target.value })
                 }
                 required
-                disabled={isLoading}
+                disabled={loading}
               />
             </div>
 
@@ -102,8 +98,8 @@ export default function AdminLoginPage() {
               </button>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 

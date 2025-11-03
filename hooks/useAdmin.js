@@ -46,10 +46,14 @@ import {
 /**
  * Hook for fetching orders with real-time updates
  */
-export const useOrders = (filters = {}, refreshInterval = 0) => {
+export const useOrders = (
+  filters = {},
+  restaurantId = 5,
+  refreshInterval = 0
+) => {
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    filters ? ["orders", JSON.stringify(filters)] : null,
-    () => getOrders(filters),
+    filters ? ["orders", JSON.stringify(filters), restaurantId] : null,
+    () => getOrders(filters, restaurantId),
     {
       refreshInterval,
       revalidateOnFocus: false,
@@ -58,6 +62,8 @@ export const useOrders = (filters = {}, refreshInterval = 0) => {
       },
     }
   );
+
+  console.log("data", data);
 
   return {
     orders: data?.data && data.data.length > 0 ? data.data : dummyOrders,
@@ -314,10 +320,10 @@ export const useCustomers = (filters = {}) => {
 /**
  * Hook for fetching payments
  */
-export const usePayments = (filters = {}) => {
+export const usePayments = (filters = {}, restaurantId = 5) => {
   const { data, error, isLoading, mutate } = useSWR(
     ["payments", JSON.stringify(filters)],
-    () => getPayments(filters),
+    () => getPayments(filters, restaurantId),
     {
       onError: (err) => {
         console.log("Payments fetch failed, using dummy data");

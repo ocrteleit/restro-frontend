@@ -25,11 +25,11 @@ npm run dev
 The application will be available at:
 
 - **Customer Frontend:** http://localhost:3000
-- **Admin Panel:** http://localhost:3000/admin/login
+- **Admin Panel:** http://localhost:3000/login
 
 ### 3. Admin Panel Access
 
-**Login Page:** `/admin/login`
+**Login Page:** `/login`
 
 For demo/testing purposes, any email and password combination will work. The login page sets a demo token in localStorage.
 
@@ -126,7 +126,7 @@ Token is stored in `localStorage` as `admin_token`.
 
 To implement proper authentication:
 
-1. **Update login page** (`app/admin/login/page.jsx`):
+1. **Update login page** (`app/login/page.jsx`):
 
 ```javascript
 // Replace the demo login with actual API call

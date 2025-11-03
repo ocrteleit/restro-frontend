@@ -1,10 +1,11 @@
+"use client";
 import ModernAdminLayout from "@/components/layout/modern-admin-layout";
-
-export const metadata = {
-  title: "Restaurant Admin Panel",
-  description: "Manage your restaurant operations",
-};
+import { SessionProvider } from "next-auth/react";
 
 export default function Layout({ children }) {
-  return <ModernAdminLayout>{children}</ModernAdminLayout>;
+  return (
+    <SessionProvider>
+      <ModernAdminLayout>{children}</ModernAdminLayout>
+    </SessionProvider>
+  );
 }

@@ -285,6 +285,7 @@ export const useKitchenOrders = (
       revalidateOnFocus: true,
     }
   );
+  console.log("data", data);
 
   return {
     kitchenOrders: data?.data || [],

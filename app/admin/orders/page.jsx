@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { useOrders, useUpdateOrderStatus } from "@/hooks/useAdmin";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const statusConfig = {
   created: {
@@ -70,11 +71,22 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-
+  const { data: session } = useSession();
+  console.log("session", session);
+  const { user } = session;
+  console.log("user", user);
+  const restaurantId = user.restaurantId;
+  console.log("restaurantId", restaurantId);
   const currentTab = tabs.find((tab) => tab.id === activeTab);
   const filters = currentTab.status ? { status: currentTab.status } : {};
+  console.log("filters", filters);
+  const { orders, isLoading, isValidating, mutate } = useOrders(
+    filters,
+    restaurantId,
+    0
+  ); // Disabled auto-refresh
 
-  const { orders, isLoading, isValidating, mutate } = useOrders(filters, 0); // Disabled auto-refresh
+  console.log("orders", orders);
   const { updateStatus, isUpdating } = useUpdateOrderStatus();
 
   const handleStatusUpdate = async (orderId, newStatus) => {
@@ -110,13 +122,13 @@ export default function OrdersPage() {
     }, 0);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-96">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">

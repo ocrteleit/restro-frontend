@@ -105,6 +105,7 @@ export default function AnalyticsDashboard({ restaurantId = null }) {
       bgColor: "bg-purple-50",
     },
   ];
+  console.log("paymentMethods", paymentMethods);
 
   return (
     <div className="space-y-6">
@@ -328,12 +329,13 @@ export default function AnalyticsDashboard({ restaurantId = null }) {
                   fill="#8884d8"
                   dataKey="amount"
                 >
-                  {paymentMethods.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
+                  {paymentMethods?.length > 0 &&
+                    paymentMethods?.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
                 </Pie>
                 <Tooltip formatter={(value) => formatCurrency(value)} />
               </PieChart>

@@ -67,12 +67,15 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   } = useSWR(`restaurant-${restaurantId}`, () =>
     getRestaurantName(restaurantId)
   );
+  console.log("restaurant", restaurant);
 
   const {
     data: menuItems,
     error: menuError,
     isLoading: menuLoading,
   } = useSWR(`menu-${restaurantId}`, () => fetchMenuItems(restaurantId));
+
+  console.log("menuItems", menuItems);
 
   const { trigger: triggerCallWaiter, isMutating: waiterLoading } =
     useSWRMutation("call-waiter", callWaiterMutation);
@@ -496,7 +499,9 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     0
   );
 
-  if (restaurantLoading || menuLoading) {
+  console.log("restaurant", restaurant);
+
+  if (!restaurant) {
     return <LoadingScreen />;
   }
 
@@ -511,15 +516,15 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     );
   }
 
-  if (!restaurant) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Restaurant not found</p>
-        </div>
-      </div>
-    );
-  }
+  // if (!restaurant) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-center">
+  //         <p className="text-gray-600">Restaurant not found</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen pb-24 bg-gradient-to-br from-orange-50 via-white to-pink-50">

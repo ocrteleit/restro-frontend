@@ -214,7 +214,7 @@ All requested features have been successfully implemented in **JavaScript** usin
 
 1. `/app/admin/layout.jsx` - Admin layout wrapper
 2. `/app/admin/page.jsx` - Auto-redirect to dashboard
-3. `/app/admin/login/page.jsx` - Login page
+3. `/app/login/page.jsx` - Login page
 4. `/app/admin/dashboard/page.jsx` - Main dashboard
 5. `/app/admin/orders/page.jsx` - Orders management
 6. `/app/admin/tables/page.jsx` - Tables + QR codes
@@ -289,7 +289,7 @@ npm run dev
 
 ### 2. Access Admin Panel
 
-Navigate to: `http://localhost:3000/admin/login`
+Navigate to: `http://localhost:3000/login`
 
 Use any email/password for demo login.
 

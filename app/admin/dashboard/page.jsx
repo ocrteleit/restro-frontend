@@ -43,6 +43,7 @@ import {
   usePaymentBreakdown,
   useRestaurants,
 } from "@/hooks/useAdmin";
+import { useSession } from "next-auth/react";
 
 const COLORS = {
   created: "#ff9800",
@@ -65,7 +66,8 @@ const PAYMENT_COLORS = {
 export default function DashboardPage() {
   const [dateRange, setDateRange] = useState("today");
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-
+  const { data: session } = useSession();
+  console.log("session", session);
   // Calculate date filters
   const filters = useMemo(() => {
     const now = new Date();
@@ -102,6 +104,9 @@ export default function DashboardPage() {
     isValidating: metricsValidating,
     mutate: mutateMetrics,
   } = useDashboardMetrics(filters);
+
+  console.log(metrics);
+  console.log(metricsLoading);
   const { revenueData, isLoading: revenueLoading } = useRevenueData(filters);
   const { topItems, isLoading: topItemsLoading } = useTopSellingItems(
     filters,
@@ -186,13 +191,13 @@ export default function DashboardPage() {
     },
   ];
 
-  if (metricsLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // if (metricsLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-96">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">

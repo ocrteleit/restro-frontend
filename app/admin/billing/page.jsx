@@ -92,7 +92,9 @@ export default function BillingPage() {
     return { startDate, endDate };
   }, [dateRange]);
 
-  const { payments, isLoading, meta } = usePayments(filters);
+  const { payments, isLoading, meta } = usePayments(filters, 5);
+
+  console.log("payments", payments);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("en-IN", {
@@ -166,13 +168,13 @@ export default function BillingPage() {
     toast.success("Report exported successfully");
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-96">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">

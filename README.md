@@ -288,3 +288,26 @@ For issues or questions, please contact the development team.
 ---
 
 **Built with ❤️ using Next.js, SWR, and Framer Motion**
+
+# Auth: Switching to database users with NextAuth
+
+To use real database users with NextAuth CredentialsProvider:
+- Replace the in-memory users array in `app/api/auth/[...nextauth]/route.js` with DB lookup logic.
+- For example, with Prisma and bcrypt:
+
+```js
+// Example (swap in for the authorize() in route.js):
+import { prisma } from "@/lib/prisma"; // Setup your Prisma client
+import bcrypt from "bcryptjs";
+const user = await prisma.user.findUnique({ where: { email: credentials.username } });
+if (user && await bcrypt.compare(credentials.password, user.passwordHash)) {
+  // user.role from DB
+  return { id: user.id, name: user.name, email: user.email, role: user.role };
+}
+```
+- See NextAuth docs for session store and advanced configuration.
+- Always store NEXTAUTH_SECRET securely (`openssl rand -base64 32`).
+
+**Security notes:**
+- For production, never store plaintext passwords! Always hash (bcrypt, argon2) and use a proper session store for horizontal scaling (Redis, DB, etc).
+- See: https://next-auth.js.org/configuration/options#session

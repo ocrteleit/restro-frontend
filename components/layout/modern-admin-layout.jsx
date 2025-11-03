@@ -60,6 +60,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useSidebarStore } from "@/lib/stores/sidebar-store";
 import { removeAuthToken } from "@/lib/admin-api";
+import SignOutButton from "../admin/SignOutButton";
 
 const navigation = [
   {
@@ -158,7 +159,7 @@ export default function ModernAdminLayout({ children }) {
 
   const handleLogout = () => {
     removeAuthToken();
-    window.location.href = "/admin/login";
+    window.location.href = "/login";
   };
 
   // Get breadcrumb from pathname
@@ -265,16 +266,12 @@ export default function ModernAdminLayout({ children }) {
 
       {/* User section */}
       <div className="border-t p-3">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-          onClick={handleLogout}
-        >
+        <SignOutButton className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
           <LogOut
             className={cn("h-5 w-5", isCollapsed && !isMobile ? "" : "mr-3")}
           />
           {(!isCollapsed || isMobile) && <span>Logout</span>}
-        </Button>
+        </SignOutButton>
       </div>
     </div>
   );
@@ -458,13 +455,10 @@ export default function ModernAdminLayout({ children }) {
                     <span>Help</span>
                   </DropdownMenuItem>
                   <Separator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="text-destructive"
-                  >
+                  <SignOutButton className="w-full text-destructive justify-start">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
-                  </DropdownMenuItem>
+                  </SignOutButton>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
