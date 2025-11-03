@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { Eye, CheckCircle, XCircle, Clock, ChefHat } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -71,22 +65,22 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { data: session } = useSession();
-  console.log("session", session);
-  const { user } = session;
-  console.log("user", user);
-  const restaurantId = user.restaurantId;
-  console.log("restaurantId", restaurantId);
+  const { data: session, status } = useSession();
+  // If loading or session not available, render nothing or a loader (optional)
+  if (status === "loading" || !session || !session.user) {
+    return null;
+  }
+
+  const user = session?.user;
+  const restaurantId = user?.restaurantId;
   const currentTab = tabs.find((tab) => tab.id === activeTab);
   const filters = currentTab.status ? { status: currentTab.status } : {};
-  console.log("filters", filters);
   const { orders, isLoading, isValidating, mutate } = useOrders(
     filters,
     restaurantId,
     0
   ); // Disabled auto-refresh
 
-  console.log("orders", orders);
   const { updateStatus, isUpdating } = useUpdateOrderStatus();
 
   const handleStatusUpdate = async (orderId, newStatus) => {
