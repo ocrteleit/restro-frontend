@@ -44,12 +44,12 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-3 text-center">
           <div className="flex justify-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center">
-              <Store className="w-10 h-10 text-white" />
+            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center">
+              <Store className="w-10 h-10 text-primary-foreground" />
             </div>
           </div>
           <CardTitle className="text-3xl font-bold">RestroAdmin</CardTitle>
@@ -91,9 +91,9 @@ export default function AdminLoginPage() {
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4" />
-                <span className="text-gray-600">Remember me</span>
+                <span className="text-muted-foreground">Remember me</span>
               </label>
-              <button type="button" className="text-blue-600 hover:underline">
+              <button type="button" className="text-primary hover:underline">
                 Forgot password?
               </button>
             </div>
@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div className="mt-6 text-center text-sm text-muted-foreground">
             <p>Demo: Use any email and password to login</p>
           </div>
         </CardContent>

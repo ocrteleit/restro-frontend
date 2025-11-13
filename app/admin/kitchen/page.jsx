@@ -9,11 +9,12 @@ import { useKitchenOrders } from "@/hooks/useAnalytics";
 import { updateOrderStatus } from "@/lib/admin-api";
 import { toast } from "react-hot-toast";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const statusColors = {
-  created: "bg-yellow-100 text-yellow-800",
-  accepted: "bg-blue-100 text-blue-800",
-  preparing: "bg-orange-100 text-orange-800",
-  ready: "bg-green-100 text-green-800",
+  created: "bg-[var(--status-pending)] bg-opacity-20 text-[var(--status-pending)]",
+  accepted: "bg-[var(--status-confirmed)] bg-opacity-20 text-[var(--status-confirmed)]",
+  preparing: "bg-[var(--status-preparing)] bg-opacity-20 text-[var(--status-preparing)]",
+  ready: "bg-[var(--status-ready)] bg-opacity-20 text-[var(--status-ready)]",
 };
 
 export default function KitchenDisplayPage() {
@@ -47,15 +48,15 @@ export default function KitchenDisplayPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-background p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-4xl font-bold text-white">Kitchen Display</h1>
-          <p className="text-gray-400 mt-1">
+          <h1 className="text-4xl font-bold text-foreground">Kitchen Display</h1>
+          <p className="text-muted-foreground mt-1">
             {kitchenOrders?.length} active orders
             {isValidating && (
-              <span className="ml-3 text-green-400">● Live</span>
+              <span className="ml-3 text-[var(--status-ready)]">● Live</span>
             )}
           </p>
         </div>
@@ -80,28 +81,28 @@ export default function KitchenDisplayPage() {
               <Card
                 key={order.id}
                 className={`${
-                  isUrgent ? "border-red-500 border-2" : "border-gray-700"
-                } bg-gray-800`}
+                  isUrgent ? "border-destructive border-2" : "border-border"
+                }`}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-white text-xl">
+                    <CardTitle className="text-foreground text-xl">
                       {orderData?.order_number}
                     </CardTitle>
                     <Badge className={statusColors[orderData?.status]}>
                       {orderData?.status}
                     </Badge>
                   </div>
-                  <div className="flex items-center text-gray-400 text-sm mt-2">
+                  <div className="flex items-center text-muted-foreground text-sm mt-2">
                     <Clock className="h-4 w-4 mr-1" />
-                    <span className={isUrgent ? "text-red-400 font-bold" : ""}>
+                    <span className={isUrgent ? "text-destructive font-bold" : ""}>
                       {minutesSince} min ago
                     </span>
                     {isUrgent && (
-                      <AlertCircle className="h-4 w-4 ml-2 text-red-400" />
+                      <AlertCircle className="h-4 w-4 ml-2 text-destructive" />
                     )}
                   </div>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-muted-foreground text-sm">
                     Table:{" "}
                     {orderData?.table?.data?.attributes?.table_number || "N/A"}
                   </div>
@@ -115,16 +116,16 @@ export default function KitchenDisplayPage() {
                       return (
                         <div
                           key={item.id}
-                          className="flex justify-between items-center bg-gray-700 p-2 rounded"
+                          className="flex justify-between items-center bg-muted p-2 rounded"
                         >
-                          <div className="text-white">
+                          <div className="text-foreground">
                             <span className="font-bold mr-2">
                               {item?.attributes.quantity}x
                             </span>
                             {menuItem?.attributes?.name || "Item"}
                           </div>
                           {item?.attributes?.notes && (
-                            <span className="text-yellow-400 text-xs">
+                            <span className="text-[var(--status-pending)] text-xs">
                               📝 {item.attributes.notes}
                             </span>
                           )}
@@ -147,7 +148,7 @@ export default function KitchenDisplayPage() {
                     )}
                     {orderData?.status === "accepted" && (
                       <Button
-                        className="w-full bg-orange-600 hover:bg-orange-700"
+                        className="w-full bg-[var(--status-preparing)] hover:bg-[var(--status-preparing)]/90 text-white"
                         onClick={() =>
                           handleStatusUpdate(order.id, "preparing")
                         }
@@ -157,7 +158,7 @@ export default function KitchenDisplayPage() {
                     )}
                     {orderData?.status === "preparing" && (
                       <Button
-                        className="w-full bg-green-600 hover:bg-green-700"
+                        className="w-full bg-[var(--status-ready)] hover:bg-[var(--status-ready)]/90 text-white"
                         onClick={() => handleStatusUpdate(order.id, "ready")}
                       >
                         Mark as Ready
@@ -165,7 +166,7 @@ export default function KitchenDisplayPage() {
                     )}
                     {orderData?.status === "ready" && (
                       <Button
-                        className="w-full bg-green-600 hover:bg-green-700"
+                        className="w-full bg-[var(--status-completed)] hover:bg-[var(--status-completed)]/90 text-white"
                         onClick={() => handleStatusUpdate(order.id, "served")}
                       >
                         Mark as Served
@@ -189,9 +190,9 @@ export default function KitchenDisplayPage() {
 
       {kitchenOrders?.length === 0 && (
         <div className="text-center py-20">
-          <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto mb-4" />
-          <h3 className="text-2xl text-white font-semibold">All Clear!</h3>
-          <p className="text-gray-400 mt-2">No active orders in the kitchen</p>
+          <CheckCircle2 className="h-20 w-20 text-[var(--status-ready)] mx-auto mb-4" />
+          <h3 className="text-2xl text-foreground font-semibold">All Clear!</h3>
+          <p className="text-muted-foreground mt-2">No active orders in the kitchen</p>
         </div>
       )}
     </div>

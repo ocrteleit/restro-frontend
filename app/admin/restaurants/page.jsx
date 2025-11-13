@@ -29,18 +29,23 @@ import {
 } from "@/lib/admin-api";
 import { toast } from "react-hot-toast";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const statusConfig = {
   active: {
     label: "Active",
-    color: "bg-green-500",
-    textColor: "text-green-600",
+    color: "bg-[var(--status-ready)]",
+    textColor: "text-[var(--status-ready)]",
   },
   inactive: {
     label: "Inactive",
-    color: "bg-gray-500",
-    textColor: "text-gray-600",
+    color: "bg-muted",
+    textColor: "text-muted-foreground",
   },
-  closed: { label: "Closed", color: "bg-red-500", textColor: "text-red-600" },
+  closed: { 
+    label: "Closed", 
+    color: "bg-[var(--status-cancelled)]", 
+    textColor: "text-[var(--status-cancelled)]" 
+  },
 };
 
 export default function RestaurantsPage() {

@@ -252,7 +252,7 @@ export default function MenuPage() {
   if (menuLoading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -262,8 +262,8 @@ export default function MenuPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Menu Management</h1>
-          <p className="text-gray-500 mt-1">Manage menu items and categories</p>
+          <h1 className="text-3xl font-bold text-foreground">Menu Management</h1>
+          <p className="text-muted-foreground mt-1">Manage menu items and categories</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -291,7 +291,7 @@ export default function MenuPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search menu items..."
             value={searchQuery}
@@ -324,7 +324,7 @@ export default function MenuPage() {
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="group flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2"
+                className="group flex items-center gap-2 bg-muted rounded-lg px-3 py-2"
               >
                 <span className="font-medium">{category.attributes.name}</span>
                 <Badge
@@ -379,10 +379,10 @@ export default function MenuPage() {
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-foreground">
                         {item.attributes.name}
                       </h3>
-                      <p className="text-sm text-gray-500 line-clamp-2 mt-1">
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                         {item.attributes.description}
                       </p>
                     </div>

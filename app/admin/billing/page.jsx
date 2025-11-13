@@ -21,45 +21,54 @@ import { Badge } from "@/components/ui/badge";
 import { usePayments } from "@/hooks/useAdmin";
 import { toast } from "react-hot-toast";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const paymentMethodConfig = {
   cash: {
     label: "Cash",
     icon: Banknote,
-    color: "text-green-600",
-    bgColor: "bg-green-50",
+    color: "text-[var(--status-ready)]",
+    bgColor: "bg-[var(--status-ready)]/10",
   },
   card: {
     label: "Card",
     icon: CreditCard,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
+    color: "text-[var(--status-confirmed)]",
+    bgColor: "bg-[var(--status-confirmed)]/10",
   },
   online: {
     label: "Online",
     icon: Smartphone,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
+    color: "text-[var(--status-preparing)]",
+    bgColor: "bg-[var(--status-preparing)]/10",
   },
   upi: {
     label: "UPI",
     icon: DollarSign,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
+    color: "text-[var(--status-pending)]",
+    bgColor: "bg-[var(--status-pending)]/10",
   },
 };
 
 const statusConfig = {
-  paid: { label: "Paid", color: "bg-green-500", textColor: "text-green-600" },
+  paid: { 
+    label: "Paid", 
+    color: "bg-[var(--status-ready)]", 
+    textColor: "text-[var(--status-ready)]" 
+  },
   pending: {
     label: "Pending",
-    color: "bg-yellow-500",
-    textColor: "text-yellow-600",
+    color: "bg-[var(--status-pending)]",
+    textColor: "text-[var(--status-pending)]",
   },
-  failed: { label: "Failed", color: "bg-red-500", textColor: "text-red-600" },
+  failed: { 
+    label: "Failed", 
+    color: "bg-[var(--status-cancelled)]", 
+    textColor: "text-[var(--status-cancelled)]" 
+  },
   refunded: {
     label: "Refunded",
-    color: "bg-gray-500",
-    textColor: "text-gray-600",
+    color: "bg-muted",
+    textColor: "text-muted-foreground",
   },
 };
 

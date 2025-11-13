@@ -51,7 +51,7 @@ import LoadingScreen from "./loading-screen";
 function Card({ className, ...props }) {
   return (
     <div
-      className={`bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${
+      className={`bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${
         className || ""
       }`}
       {...props}
@@ -509,8 +509,12 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 mb-2">Failed to load restaurant data</p>
-          <p className="text-gray-600">Please try refreshing the page</p>
+          <p className="text-destructive mb-2">
+            Failed to load restaurant data
+          </p>
+          <p className="text-muted-foreground">
+            Please try refreshing the page
+          </p>
         </div>
       </div>
     );
@@ -527,12 +531,12 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   // }
 
   return (
-    <div className="min-h-screen pb-24 bg-gradient-to-br from-orange-50 via-white to-pink-50">
+    <div className="min-h-screen pb-24 bg-background">
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white p-4 sm:p-6 text-center shadow-xl"
+        className="bg-primary text-primary-foreground p-4 sm:p-6 text-center shadow-xl"
       >
         <div className="relative">
           <div className="absolute inset-0 bg-black/10 rounded-3xl"></div>
@@ -562,7 +566,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
               transition={{ delay: 0.4 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium animate-fade-in animation-delay-200"
             >
-              <Star className="w-4 h-4 text-yellow-300" />
+              <Star className="w-4 h-4 text-[var(--status-pending)]" />
               Table {tableId}
             </motion.div>
           </div>
@@ -574,8 +578,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             onClick={() => setViewMode("grid")}
             className={`p-3 rounded-xl transition-all duration-200 ${
               viewMode === "grid"
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >
             <Grid3X3 className="w-4 h-4" />
@@ -584,8 +588,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             onClick={() => setViewMode("list")}
             className={`p-3 rounded-xl transition-all duration-200 ${
               viewMode === "list"
-                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >
             <List className="w-4 h-4" />
@@ -596,8 +600,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
           onClick={handleEyeClick}
           className={`p-3 rounded-2xl transition-all duration-200 shadow-lg border border-gray-200/50 ${
             showImages
-              ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-xl"
-              : "bg-white/80 backdrop-blur-sm text-gray-500 hover:text-gray-700"
+              ? "bg-primary text-primary-foreground shadow-xl"
+              : "bg-card/80 backdrop-blur-sm text-muted-foreground hover:text-foreground"
           }`}
           title={showImages ? "View image gallery" : "Show images"}
         >
@@ -609,11 +613,11 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
         </button>
       </div>
 
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/50 px-4 py-4 shadow-sm">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/50 px-4 py-4 shadow-sm">
         <div className="relative max-w-md mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 rounded-2xl blur-sm opacity-20"></div>
-          <div className="relative bg-white rounded-2xl shadow-lg">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-sm opacity-20"></div>
+          <div className="relative bg-card rounded-2xl shadow-lg">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <Input
               type="text"
               placeholder="Search delicious items..."
@@ -637,8 +641,8 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 onClick={() => handleCategoryClick(category.id)}
                 className={`flex-shrink-0 px-6 py-3 text-sm font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
                   activeCategory === category.id
-                    ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white scale-105 shadow-xl"
-                    : "bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-gradient-to-r hover:from-orange-100 hover:to-pink-100 hover:text-orange-600 border border-gray-200/50"
+                    ? "bg-primary text-primary-foreground scale-105 shadow-xl"
+                    : "bg-card/80 backdrop-blur-sm text-foreground hover:bg-secondary hover:text-foreground border border-border"
                 }`}
               >
                 {category.name}
@@ -769,7 +773,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                                   : "mb-3 h-32 sm:h-36 md:h-40"
                               }`}
                             >
-                              <ImageIcon className="w-8 h-8 text-gray-400" />
+                              <ImageIcon className="w-8 h-8 text-muted-foreground" />
                             </div>
                           )}
 

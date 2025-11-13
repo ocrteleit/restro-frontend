@@ -25,30 +25,31 @@ import {
 import { useTables, useTableMutations, useRestaurants } from "@/hooks/useAdmin";
 import { toast } from "react-hot-toast";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const statusConfig = {
   available: {
     label: "Available",
-    color: "bg-green-500",
-    bgClass: "bg-green-50",
-    textColor: "text-green-700",
+    color: "bg-[var(--status-ready)]",
+    bgClass: "bg-[var(--status-ready)]/10",
+    textColor: "text-[var(--status-ready)]",
   },
   occupied: {
     label: "Occupied",
-    color: "bg-red-500",
-    bgClass: "bg-red-50",
-    textColor: "text-red-700",
+    color: "bg-[var(--status-cancelled)]",
+    bgClass: "bg-[var(--status-cancelled)]/10",
+    textColor: "text-[var(--status-cancelled)]",
   },
   reserved: {
     label: "Reserved",
-    color: "bg-blue-500",
-    bgClass: "bg-blue-50",
-    textColor: "text-blue-700",
+    color: "bg-[var(--status-confirmed)]",
+    bgClass: "bg-[var(--status-confirmed)]/10",
+    textColor: "text-[var(--status-confirmed)]",
   },
   cleaning: {
     label: "Cleaning",
-    color: "bg-yellow-500",
-    bgClass: "bg-yellow-50",
-    textColor: "text-yellow-700",
+    color: "bg-[var(--status-pending)]",
+    bgClass: "bg-[var(--status-pending)]/10",
+    textColor: "text-[var(--status-pending)]",
   },
 };
 

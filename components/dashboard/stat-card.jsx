@@ -12,7 +12,7 @@ export function StatCard({
   trend,
   trendValue,
   delay = 0,
-  colorClass = "from-blue-500 to-blue-600",
+  colorClass = "bg-primary",
 }) {
   const isPositive = trend === "up";
 
@@ -35,7 +35,7 @@ export function StatCard({
                   <div
                     className={cn(
                       "flex items-center gap-1 text-sm font-medium",
-                      isPositive ? "text-green-500" : "text-red-500"
+                      isPositive ? "text-[var(--status-ready)]" : "text-[var(--status-cancelled)]"
                     )}
                   >
                     {isPositive ? (
@@ -50,13 +50,13 @@ export function StatCard({
             </div>
             <motion.div
               className={cn(
-                "rounded-xl p-3 bg-gradient-to-br shadow-md",
-                colorClass
+                "rounded-xl p-3 shadow-md",
+                colorClass || "bg-primary"
               )}
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <Icon className="h-6 w-6 text-white" />
+              <Icon className="h-6 w-6 text-primary-foreground" />
             </motion.div>
           </div>
         </CardContent>

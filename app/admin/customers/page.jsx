@@ -89,8 +89,8 @@ export default function CustomersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-bold text-foreground">Customers</h1>
+        <p className="text-muted-foreground mt-1">
           Manage customer relationships and loyalty
         </p>
       </div>
@@ -99,7 +99,7 @@ export default function CustomersPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Customers
             </CardTitle>
           </CardHeader>
@@ -166,22 +166,22 @@ export default function CustomersPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 px-4 font-medium text-gray-600">
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
                     Customer
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-600">
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
                     Contact
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
                     Orders
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
                     Total Spent
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-600">
+                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">
                     Loyalty Points
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-600">
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">
                     Last Visit
                   </th>
                 </tr>
@@ -189,7 +189,7 @@ export default function CustomersPage() {
               <tbody>
                 {filteredCustomers.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-8 text-gray-500">
+                    <td colSpan="6" className="text-center py-8 text-muted-foreground">
                       No customers found
                     </td>
                   </tr>
@@ -199,16 +199,16 @@ export default function CustomersPage() {
                     return (
                       <tr
                         key={customer.id}
-                        className="border-b hover:bg-gray-50 cursor-pointer"
+                        className="border-b hover:bg-muted cursor-pointer"
                         onClick={() => viewCustomerDetails(customer)}
                       >
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                              <User className="w-5 h-5 text-blue-600" />
+                            <div className="w-10 h-10 rounded-full bg-[var(--status-confirmed)]/10 flex items-center justify-center">
+                              <User className="w-5 h-5 text-[var(--status-confirmed)]" />
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-foreground">
                                 {attrs.name}
                               </p>
                             </div>
@@ -217,13 +217,13 @@ export default function CustomersPage() {
                         <td className="py-3 px-4">
                           <div className="space-y-1">
                             {attrs.phone && (
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Phone className="w-3 h-3" />
                                 {attrs.phone}
                               </div>
                             )}
                             {attrs.email && (
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Mail className="w-3 h-3" />
                                 {attrs.email}
                               </div>
@@ -280,16 +280,16 @@ export default function CustomersPage() {
                   <CardContent className="space-y-3">
                     {selectedCustomer.attributes.phone && (
                       <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-700">
+                        <Phone className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-foreground">
                           {selectedCustomer.attributes.phone}
                         </span>
                       </div>
                     )}
                     {selectedCustomer.attributes.email && (
                       <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-700">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-foreground">
                           {selectedCustomer.attributes.email}
                         </span>
                       </div>

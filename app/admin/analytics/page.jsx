@@ -42,13 +42,14 @@ import {
   useRestaurants,
 } from "@/hooks/useAdmin";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const COLORS = [
-  "#2196f3",
-  "#4caf50",
-  "#ff9800",
-  "#f44336",
-  "#9c27b0",
-  "#00bcd4",
+  "var(--chart-1)",  // Primary color
+  "var(--chart-2)",  // Secondary color
+  "var(--chart-3)",  // Blue
+  "var(--chart-4)",  // Purple
+  "var(--chart-5)",  // Pink
+  "var(--status-confirmed)", // Additional color
 ];
 
 export default function AnalyticsPage() {

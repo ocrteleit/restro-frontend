@@ -17,38 +17,47 @@ import { useOrders, useUpdateOrderStatus } from "@/hooks/useAdmin";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const statusConfig = {
   created: {
     label: "Created",
-    color: "bg-orange-500",
-    textColor: "text-orange-600",
+    color: "bg-[var(--status-pending)]",
+    textColor: "text-[var(--status-pending)]",
   },
   accepted: {
     label: "Accepted",
-    color: "bg-blue-500",
-    textColor: "text-blue-600",
+    color: "bg-[var(--status-confirmed)]",
+    textColor: "text-[var(--status-confirmed)]",
   },
   preparing: {
     label: "Preparing",
-    color: "bg-purple-500",
-    textColor: "text-purple-600",
+    color: "bg-[var(--status-preparing)]",
+    textColor: "text-[var(--status-preparing)]",
   },
-  ready: { label: "Ready", color: "bg-green-500", textColor: "text-green-600" },
-  served: { label: "Served", color: "bg-gray-500", textColor: "text-gray-600" },
+  ready: {
+    label: "Ready",
+    color: "bg-[var(--status-ready)]",
+    textColor: "text-[var(--status-ready)]",
+  },
+  served: {
+    label: "Served",
+    color: "bg-muted",
+    textColor: "text-muted-foreground",
+  },
   completed: {
     label: "Completed",
-    color: "bg-green-700",
-    textColor: "text-green-700",
+    color: "bg-[var(--status-completed)]",
+    textColor: "text-[var(--status-completed)]",
   },
   cancelled: {
     label: "Cancelled",
-    color: "bg-red-500",
-    textColor: "text-red-600",
+    color: "bg-[var(--status-cancelled)]",
+    textColor: "text-[var(--status-cancelled)]",
   },
   rejected: {
     label: "Rejected",
-    color: "bg-red-700",
-    textColor: "text-red-700",
+    color: "bg-destructive",
+    textColor: "text-destructive",
   },
 };
 
@@ -66,15 +75,15 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const { data: session, status } = useSession();
-  // If loading or session not available, render nothing or a loader (optional)
-  if (status === "loading" || !session || !session.user) {
-    return null;
-  }
-
+  
+  // Get user and restaurantId (may be undefined during loading)
   const user = session?.user;
   const restaurantId = user?.restaurantId;
   const currentTab = tabs.find((tab) => tab.id === activeTab);
   const filters = currentTab.status ? { status: currentTab.status } : {};
+  
+  // ⚠️ IMPORTANT: All hooks must be called BEFORE any conditional returns
+  // This ensures consistent hook order across renders
   const { orders, isLoading, isValidating, mutate } = useOrders(
     filters,
     restaurantId,
@@ -82,6 +91,11 @@ export default function OrdersPage() {
   ); // Disabled auto-refresh
 
   const { updateStatus, isUpdating } = useUpdateOrderStatus();
+  
+  // Now we can do conditional returns AFTER all hooks
+  if (status === "loading" || !session || !session.user) {
+    return null;
+  }
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
@@ -130,17 +144,17 @@ export default function OrdersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Orders Management
             </h1>
             {isValidating && (
-              <div className="flex items-center gap-2 text-sm text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <div className="flex items-center gap-2 text-sm text-primary">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                 <span>Refreshing...</span>
               </div>
             )}
           </div>
-          <p className="text-gray-500 mt-1">
+          <p className="text-muted-foreground mt-1">
             Manage and track all restaurant orders
           </p>
         </div>
@@ -154,7 +168,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-border">
         <nav className="-mb-px flex space-x-8 overflow-x-auto">
           {tabs.map((tab) => (
             <button
@@ -164,8 +178,8 @@ export default function OrdersPage() {
                 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
                 ${
                   activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }
               `}
             >
@@ -259,7 +273,7 @@ export default function OrdersPage() {
                           }
                           disabled={isUpdating}
                           size="sm"
-                          className="bg-blue-600 hover:bg-blue-700"
+                          className="bg-[var(--status-confirmed)] hover:bg-[var(--status-confirmed)]/90 text-white"
                         >
                           <CheckCircle className="w-4 h-4 mr-2" />
                           Accept
@@ -273,7 +287,7 @@ export default function OrdersPage() {
                           }
                           disabled={isUpdating}
                           size="sm"
-                          className="bg-purple-600 hover:bg-purple-700"
+                          className="bg-[var(--status-preparing)] hover:bg-[var(--status-preparing)]/90 text-white"
                         >
                           <ChefHat className="w-4 h-4 mr-2" />
                           Start Preparing
@@ -285,7 +299,7 @@ export default function OrdersPage() {
                           onClick={() => handleStatusUpdate(order.id, "ready")}
                           disabled={isUpdating}
                           size="sm"
-                          className="bg-green-600 hover:bg-green-700"
+                          className="bg-[var(--status-ready)] hover:bg-[var(--status-ready)]/90 text-white"
                         >
                           <CheckCircle className="w-4 h-4 mr-2" />
                           Mark Ready

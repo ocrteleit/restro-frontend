@@ -45,22 +45,23 @@ import {
 } from "@/hooks/useAdmin";
 import { useSession } from "next-auth/react";
 
+// ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const COLORS = {
-  created: "#ff9800",
-  accepted: "#2196f3",
-  preparing: "#9c27b0",
-  ready: "#4caf50",
-  served: "#9e9e9e",
-  completed: "#1b5e20",
-  cancelled: "#f44336",
-  rejected: "#b71c1c",
+  created: "var(--status-pending)",
+  accepted: "var(--status-confirmed)",
+  preparing: "var(--status-preparing)",
+  ready: "var(--status-ready)",
+  served: "var(--muted-foreground)",
+  completed: "var(--status-completed)",
+  cancelled: "var(--status-cancelled)",
+  rejected: "var(--destructive)",
 };
 
 const PAYMENT_COLORS = {
-  cash: "#4caf50",
-  card: "#2196f3",
-  online: "#9c27b0",
-  upi: "#ff9800",
+  cash: "var(--status-ready)",      // Green
+  card: "var(--status-confirmed)",  // Blue
+  online: "var(--status-preparing)", // Purple
+  upi: "var(--status-pending)",     // Yellow/Orange
 };
 
 export default function DashboardPage() {
@@ -131,63 +132,64 @@ export default function DashboardPage() {
       title: "Total Revenue",
       value: formatCurrency(metrics.totalRevenue),
       icon: DollarSign,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-[var(--status-ready)]",
+      bgColor: "bg-[var(--success-light)]",
       trend: "+12.5%",
     },
     {
       title: "Total Orders",
       value: metrics.totalOrders || 0,
       icon: ShoppingBag,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-[var(--status-confirmed)]",
+      bgColor: "bg-secondary",
       trend: "+8.2%",
     },
     {
       title: "Average Order Value",
       value: formatCurrency(metrics.averageOrderValue),
       icon: TrendingUp,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      color: "text-[var(--status-preparing)]",
+      bgColor: "bg-[var(--status-preparing)]/10",
       trend: "+5.1%",
     },
     {
       title: "Active Tables",
       value: `${metrics.activeTables || 0}/${metrics.totalTables || 0}`,
       icon: Users,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      color: "text-[var(--status-pending)]",
+      bgColor: "bg-[var(--status-pending)]/10",
     },
   ];
 
+  // ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
   const orderStatusCards = [
     {
       title: "Pending",
       value: metrics.pendingOrders || 0,
       icon: Clock,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      color: "text-[var(--status-pending)]",
+      bgColor: "bg-[var(--status-pending)]/10",
     },
     {
       title: "Preparing",
       value: metrics.preparingOrders || 0,
       icon: AlertCircle,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      color: "text-[var(--status-preparing)]",
+      bgColor: "bg-[var(--status-preparing)]/10",
     },
     {
       title: "Completed",
       value: metrics.completedOrders || 0,
       icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-[var(--status-completed)]",
+      bgColor: "bg-[var(--status-completed)]/10",
     },
     {
       title: "Cancelled",
       value: metrics.cancelledOrders || 0,
       icon: XCircle,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
+      color: "text-[var(--status-cancelled)]",
+      bgColor: "bg-[var(--status-cancelled)]/10",
     },
   ];
 
@@ -205,15 +207,15 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
             {metricsValidating && (
-              <div className="flex items-center gap-2 text-sm text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <div className="flex items-center gap-2 text-sm text-primary">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                 <span>Refreshing...</span>
               </div>
             )}
           </div>
-          <p className="text-gray-500 mt-1">
+          <p className="text-muted-foreground mt-1">
             Welcome back! Here's what's happening today.
           </p>
         </div>
@@ -259,7 +261,7 @@ export default function DashboardPage() {
           return (
             <Card key={index}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {card.title}
                 </CardTitle>
                 <div className={`p-2 rounded-lg ${card.bgColor}`}>
@@ -269,7 +271,7 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="text-2xl font-bold">{card.value}</div>
                 {card.trend && (
-                  <p className="text-xs text-green-600 mt-1">
+                  <p className="text-xs text-[var(--status-ready)] mt-1">
                     {card.trend} from last period
                   </p>
                 )}
@@ -286,7 +288,7 @@ export default function DashboardPage() {
           return (
             <Card key={index}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {card.title}
                 </CardTitle>
                 <Icon className={`w-5 h-5 ${card.color}`} />
@@ -406,19 +408,19 @@ export default function DashboardPage() {
                 className="flex items-center justify-between border-b pb-4 last:border-0"
               >
                 <div className="flex items-center gap-4">
-                  <div className="text-2xl font-bold text-gray-400">
+                  <div className="text-2xl font-bold text-muted-foreground">
                     #{index + 1}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">{item.name}</h4>
-                    <p className="text-sm text-gray-500">{item.category}</p>
+                    <h4 className="font-semibold text-foreground">{item.name}</h4>
+                    <p className="text-sm text-muted-foreground">{item.category}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-foreground">
                     {item.quantity_sold} sold
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {formatCurrency(item.revenue)}
                   </p>
                 </div>

@@ -88,11 +88,11 @@ export default function AdminLayout({ children }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-gray-900/80 lg:hidden"
+          className="fixed inset-0 z-40 bg-foreground/80 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -100,17 +100,17 @@ export default function AdminLayout({ children }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 z-50 flex w-72 flex-col bg-white border-r border-gray-200 lg:translate-x-0 transition-transform duration-300",
+          "fixed inset-y-0 z-50 flex w-72 flex-col bg-sidebar border-r border-sidebar-border lg:translate-x-0 transition-transform duration-300",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-gray-200">
+        <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Store className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-sidebar-primary rounded-lg flex items-center justify-center">
+              <Store className="w-5 h-5 text-sidebar-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-gray-900">RestroAdmin</span>
+            <span className="text-xl font-bold text-sidebar-foreground">RestroAdmin</span>
           </div>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
             <X className="w-6 h-6" />
@@ -129,8 +129,8 @@ export default function AdminLayout({ children }) {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-blue-50 text-blue-600"
-                        : "text-gray-700 hover:bg-gray-100"
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent"
                     )}
                   >
                     <item.icon className="w-5 h-5" />
@@ -143,8 +143,8 @@ export default function AdminLayout({ children }) {
         </nav>
 
         {/* User section */}
-        <div className="border-t border-gray-200 p-4">
-          <SignOutButton className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50">
+        <div className="border-t border-sidebar-border p-4">
+          <SignOutButton className="w-full justify-start text-destructive hover:text-destructive/90 hover:bg-destructive/10">
             <LogOut className="w-5 h-5 mr-3" />
             Logout
           </SignOutButton>
@@ -154,7 +154,7 @@ export default function AdminLayout({ children }) {
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Top header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-4 sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background px-4 sm:px-6">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden">
             <Menu className="w-6 h-6" />
           </button>
@@ -164,10 +164,10 @@ export default function AdminLayout({ children }) {
           {/* User menu */}
           <div className="flex items-center gap-2">
             <div className="hidden sm:block text-right">
-              <p className="text-sm font-medium text-gray-900">Admin User</p>
-              <p className="text-xs text-gray-500">admin@restaurant.com</p>
+              <p className="text-sm font-medium text-foreground">Admin User</p>
+              <p className="text-xs text-muted-foreground">admin@restaurant.com</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
               A
             </div>
           </div>
