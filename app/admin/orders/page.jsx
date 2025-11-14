@@ -75,13 +75,13 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const { data: session, status } = useSession();
-  
+
   // Get user and restaurantId (may be undefined during loading)
   const user = session?.user;
   const restaurantId = user?.restaurantId;
   const currentTab = tabs.find((tab) => tab.id === activeTab);
   const filters = currentTab.status ? { status: currentTab.status } : {};
-  
+
   // ⚠️ IMPORTANT: All hooks must be called BEFORE any conditional returns
   // This ensures consistent hook order across renders
   const { orders, isLoading, isValidating, mutate } = useOrders(
@@ -91,7 +91,7 @@ export default function OrdersPage() {
   ); // Disabled auto-refresh
 
   const { updateStatus, isUpdating } = useUpdateOrderStatus();
-  
+
   // Now we can do conditional returns AFTER all hooks
   if (status === "loading" || !session || !session.user) {
     return null;
@@ -144,7 +144,7 @@ export default function OrdersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-foreground ">
               Orders Management
             </h1>
             {isValidating && (
@@ -340,7 +340,7 @@ export default function OrdersPage() {
 
       {/* Order Details Sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto ">
           {selectedOrder && (
             <>
               <SheetHeader>
@@ -351,7 +351,7 @@ export default function OrdersPage() {
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-6 space-y-6">
+              <div className="mt-6 space-y-6 px-6">
                 {/* Status */}
                 <div>
                   <h4 className="font-semibold mb-2">Status</h4>

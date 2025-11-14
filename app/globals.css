@@ -3,181 +3,81 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ================================
-   RESTAURANT APP - GLOBAL COLORS
-   Professional Color Scheme
-   Change these values to update colors across entire app
-   ================================ */
-
 :root {
-  /* === BRAND COLORS (Change these for your restaurant) === */
-  --brand-primary: #d97706; /* Warm Orange - Main brand color */
-  --brand-primary-dark: #b45309; /* Darker orange for hover states */
-  --brand-primary-light: #fcd34d; /* Light amber for accents */
-  --brand-secondary: #059669; /* Fresh Green - Secondary actions */
-  --brand-accent: #dc2626; /* Red - Important/Delete actions */
-
-  /* === NEUTRAL COLORS === */
-  --neutral-50: #fafaf9;
-  --neutral-100: #f5f5f4;
-  --neutral-200: #e7e5e4;
-  --neutral-300: #d6d3d1;
-  --neutral-400: #a8a29e;
-  --neutral-500: #78716c;
-  --neutral-600: #57534e;
-  --neutral-700: #44403c;
-  --neutral-800: #292524;
-  --neutral-900: #1c1917;
-
-  /* === LIGHT MODE === */
-  --background: #ffffff;
-  --foreground: var(--neutral-900);
-  --card: #ffffff;
-  --card-foreground: var(--neutral-900);
-  --popover: #ffffff;
-  --popover-foreground: var(--neutral-900);
-
-  /* Primary (Orange) */
-  --primary: var(--brand-primary);
-  --primary-foreground: #ffffff;
-  --primary-hover: var(--brand-primary-dark);
-
-  /* Secondary (Green) */
-  --secondary: var(--neutral-100);
-  --secondary-foreground: var(--neutral-900);
-  --secondary-hover: var(--neutral-200);
-
-  /* Success (Green) */
-  --success: var(--brand-secondary);
-  --success-foreground: #ffffff;
-  --success-light: #d1fae5;
-
-  /* Danger/Destructive (Red) */
-  --destructive: var(--brand-accent);
-  --destructive-foreground: #ffffff;
-  --destructive-hover: #b91c1c;
-  --destructive-light: #fee2e2;
-
-  /* Muted/Disabled */
-  --muted: var(--neutral-100);
-  --muted-foreground: var(--neutral-500);
-
-  /* Accent */
-  --accent: var(--brand-primary-light);
-  --accent-foreground: var(--neutral-900);
-
-  /* Borders & Inputs */
-  --border: var(--neutral-200);
-  --input: var(--neutral-200);
-  --ring: var(--brand-primary);
-
-  /* Status Colors */
-  --status-pending: #f59e0b;
-  --status-confirmed: #3b82f6;
-  --status-preparing: #8b5cf6;
-  --status-ready: #10b981;
-  --status-completed: #059669;
-  --status-cancelled: #ef4444;
-
-  /* Chart Colors */
-  --chart-1: var(--brand-primary);
-  --chart-2: var(--brand-secondary);
-  --chart-3: #3b82f6;
-  --chart-4: #8b5cf6;
-  --chart-5: #ec4899;
-
-  /* Sidebar/Admin Panel */
-  --sidebar: #ffffff;
-  --sidebar-foreground: var(--neutral-900);
-  --sidebar-primary: var(--brand-primary);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--neutral-100);
-  --sidebar-accent-foreground: var(--neutral-900);
-  --sidebar-border: var(--neutral-200);
-  --sidebar-ring: var(--brand-primary);
-
-  /* Border Radius */
-  --radius: 0.5rem;
-  --radius-sm: 0.375rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Updated color scheme for premium restaurant aesthetic with warm tones */
+  --background: oklch(0.98 0.01 70);
+  --foreground: oklch(0.12 0.02 280);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.12 0.02 280);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0.02 280);
+  --primary: oklch(0.65 0.2 35);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.88 0.12 45);
+  --secondary-foreground: oklch(0.12 0.02 280);
+  --muted: oklch(0.92 0.01 70);
+  --muted-foreground: oklch(0.5 0.02 280);
+  --accent: oklch(0.72 0.16 35);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.93 0.01 70);
+  --input: oklch(0.97 0.01 70);
+  --ring: oklch(0.65 0.2 35);
+  --chart-1: oklch(0.65 0.2 35);
+  --chart-2: oklch(0.72 0.16 35);
+  --chart-3: oklch(0.55 0.18 35);
+  --chart-4: oklch(0.88 0.12 45);
+  --chart-5: oklch(0.76 0.14 40);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.98 0.01 70);
+  --sidebar-foreground: oklch(0.12 0.02 280);
+  --sidebar-primary: oklch(0.65 0.2 35);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.88 0.12 45);
+  --sidebar-accent-foreground: oklch(0.12 0.02 280);
+  --sidebar-border: oklch(0.93 0.01 70);
+  --sidebar-ring: oklch(0.65 0.2 35);
 }
 
-/* === DARK MODE === */
 .dark {
-  --background: var(--neutral-900);
-  --foreground: var(--neutral-50);
-  --card: var(--neutral-800);
-  --card-foreground: var(--neutral-50);
-  --popover: var(--neutral-800);
-  --popover-foreground: var(--neutral-50);
-
-  /* Primary (Orange) - Slightly lighter in dark mode */
-  --primary: #fb923c;
-  --primary-foreground: var(--neutral-900);
-  --primary-hover: var(--brand-primary);
-
-  /* Secondary */
-  --secondary: var(--neutral-700);
-  --secondary-foreground: var(--neutral-50);
-  --secondary-hover: var(--neutral-600);
-
-  /* Success */
-  --success: #34d399;
-  --success-foreground: var(--neutral-900);
-  --success-light: #064e3b;
-
-  /* Destructive */
-  --destructive: #f87171;
-  --destructive-foreground: var(--neutral-900);
-  --destructive-hover: var(--brand-accent);
-  --destructive-light: #7f1d1d;
-
-  /* Muted */
-  --muted: var(--neutral-800);
-  --muted-foreground: var(--neutral-400);
-
-  /* Accent */
-  --accent: var(--neutral-700);
-  --accent-foreground: var(--neutral-50);
-
-  /* Borders & Inputs */
-  --border: var(--neutral-700);
-  --input: var(--neutral-700);
-  --ring: #fb923c;
-
-  /* Status Colors - Adjusted for dark mode */
-  --status-pending: #fbbf24;
-  --status-confirmed: #60a5fa;
-  --status-preparing: #a78bfa;
-  --status-ready: #34d399;
-  --status-completed: #10b981;
-  --status-cancelled: #f87171;
-
-  /* Chart Colors */
-  --chart-1: #fb923c;
-  --chart-2: #34d399;
-  --chart-3: #60a5fa;
-  --chart-4: #a78bfa;
-  --chart-5: #f472b6;
-
-  /* Sidebar/Admin Panel */
-  --sidebar: var(--neutral-800);
-  --sidebar-foreground: var(--neutral-50);
-  --sidebar-primary: #fb923c;
-  --sidebar-primary-foreground: var(--neutral-900);
-  --sidebar-accent: var(--neutral-700);
-  --sidebar-accent-foreground: var(--neutral-50);
-  --sidebar-border: var(--neutral-700);
-  --sidebar-ring: #fb923c;
+  --background: oklch(0.13 0.02 280);
+  --foreground: oklch(0.95 0.01 70);
+  --card: oklch(0.18 0.02 280);
+  --card-foreground: oklch(0.95 0.01 70);
+  --popover: oklch(0.18 0.02 280);
+  --popover-foreground: oklch(0.95 0.01 70);
+  --primary: oklch(0.75 0.18 35);
+  --primary-foreground: oklch(0.13 0.02 280);
+  --secondary: oklch(0.35 0.08 280);
+  --secondary-foreground: oklch(0.95 0.01 70);
+  --muted: oklch(0.28 0.02 280);
+  --muted-foreground: oklch(0.65 0.02 280);
+  --accent: oklch(0.82 0.14 35);
+  --accent-foreground: oklch(0.13 0.02 280);
+  --destructive: oklch(0.596 0.238 28.232);
+  --destructive-foreground: oklch(0.95 0.01 70);
+  --border: oklch(0.28 0.02 280);
+  --input: oklch(0.23 0.02 280);
+  --ring: oklch(0.75 0.18 35);
+  --chart-1: oklch(0.75 0.18 35);
+  --chart-2: oklch(0.82 0.14 35);
+  --chart-3: oklch(0.68 0.16 35);
+  --chart-4: oklch(0.58 0.12 45);
+  --chart-5: oklch(0.72 0.15 40);
+  --sidebar: oklch(0.18 0.02 280);
+  --sidebar-foreground: oklch(0.95 0.01 70);
+  --sidebar-primary: oklch(0.75 0.18 35);
+  --sidebar-primary-foreground: oklch(0.13 0.02 280);
+  --sidebar-accent: oklch(0.35 0.08 280);
+  --sidebar-accent-foreground: oklch(0.95 0.01 70);
+  --sidebar-border: oklch(0.28 0.02 280);
+  --sidebar-ring: oklch(0.75 0.18 35);
 }
 
-/* === TAILWIND THEME INTEGRATION === */
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  /* Colors */
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -197,34 +97,15 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
-  /* Brand Colors - Available as Tailwind classes */
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-secondary: var(--brand-secondary);
-  --color-success: var(--success);
-
-  /* Chart Colors */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-
-  /* Status Colors */
-  --color-status-pending: var(--status-pending);
-  --color-status-confirmed: var(--status-confirmed);
-  --color-status-preparing: var(--status-preparing);
-  --color-status-ready: var(--status-ready);
-  --color-status-completed: var(--status-completed);
-  --color-status-cancelled: var(--status-cancelled);
-
-  /* Border Radius */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
-
-  /* Sidebar */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);

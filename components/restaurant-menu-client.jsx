@@ -60,22 +60,34 @@ function Card({ className, ...props }) {
 }
 
 export default function RestaurantMenuClient({ restaurantId, tableId }) {
+  // Optimize: Fetch both in parallel with better caching
   const {
     data: restaurant,
     error: restaurantError,
     isLoading: restaurantLoading,
-  } = useSWR(`restaurant-${restaurantId}`, () =>
-    getRestaurantName(restaurantId)
+  } = useSWR(
+    restaurantId ? `restaurant-${restaurantId}` : null,
+    () => getRestaurantName(restaurantId),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000, // Cache for 1 minute
+    }
   );
-  console.log("restaurant", restaurant);
 
   const {
     data: menuItems,
     error: menuError,
     isLoading: menuLoading,
-  } = useSWR(`menu-${restaurantId}`, () => fetchMenuItems(restaurantId));
-
-  console.log("menuItems", menuItems);
+  } = useSWR(
+    restaurantId ? `menu-${restaurantId}` : null,
+    () => fetchMenuItems(restaurantId),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000, // Cache for 1 minute
+    }
+  );
 
   const { trigger: triggerCallWaiter, isMutating: waiterLoading } =
     useSWRMutation("call-waiter", callWaiterMutation);
@@ -499,12 +511,6 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     0
   );
 
-  console.log("restaurant", restaurant);
-
-  if (!restaurant) {
-    return <LoadingScreen />;
-  }
-
   if (restaurantError || menuError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -520,15 +526,11 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
     );
   }
 
-  // if (!restaurant) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="text-center">
-  //         <p className="text-gray-600">Restaurant not found</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!restaurant) {
+    return (
+      <LoadingScreen />
+    );
+  }
 
   return (
     <div className="min-h-screen pb-24 bg-background">

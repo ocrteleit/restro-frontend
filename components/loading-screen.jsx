@@ -42,7 +42,7 @@ export default function LoadingScreen() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,9 +56,9 @@ export default function LoadingScreen() {
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
         >
-          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg animate-pulse">
+          <div className="w-20 h-20 mx-auto bg-primary rounded-full flex items-center justify-center shadow-lg animate-pulse">
             <svg
-              className="w-10 h-10 text-white"
+              className="w-10 h-10 text-primary-foreground"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -72,7 +72,7 @@ export default function LoadingScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent mb-2"
+          className="text-3xl font-bold text-primary mb-2"
         >
           DineEase
         </motion.h1>
@@ -80,7 +80,7 @@ export default function LoadingScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-gray-600 mb-8"
+          className="text-muted-foreground mb-8"
         >
           Digital Restaurant Experience
         </motion.p>
@@ -97,22 +97,22 @@ export default function LoadingScreen() {
                 duration: 0.6,
                 delay: i * 0.1,
               }}
-              className="w-3 h-3 bg-orange-500 rounded-full"
+              className="w-3 h-3 bg-primary rounded-full"
             />
           ))}
         </div>
 
         {/* Progress Bar */}
         <div className="mb-6">
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-4 overflow-hidden">
+          <div className="w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.3 }}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full"
+              className="bg-primary h-2 rounded-full"
             />
           </div>
-          <p className="text-sm text-gray-600">{progress}% Complete</p>
+          <p className="text-sm text-muted-foreground">{progress}% Complete</p>
         </div>
 
         {/* Loading Steps */}
@@ -123,7 +123,7 @@ export default function LoadingScreen() {
           exit={{ opacity: 0, y: -10 }}
           className="space-y-2"
         >
-          <p className="text-orange-600 font-medium">{steps[currentStep]}</p>
+          <p className="text-primary font-medium">{steps[currentStep]}</p>
         </motion.div>
 
         {/* Company Info */}
@@ -131,12 +131,12 @@ export default function LoadingScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 pt-8 border-t border-gray-200"
+          className="mt-12 pt-8 border-t border-border"
         >
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             Powered by DineEase Technologies
           </p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground/70 mt-1">
             Revolutionizing restaurant experiences
           </p>
         </motion.div>
