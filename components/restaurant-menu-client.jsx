@@ -527,9 +527,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
   }
 
   if (!restaurant) {
-    return (
-      <LoadingScreen />
-    );
+    return <LoadingScreen />;
   }
 
   return (

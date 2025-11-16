@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import { Plus, Edit, Trash2, QrCode, Users } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  QrCode,
+  Users,
+  Receipt,
+  ChefHat,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +30,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTables, useTableMutations, useRestaurants } from "@/hooks/useAdmin";
+import {
+  useTables,
+  useTableMutations,
+  useRestaurants,
+  useOrders,
+} from "@/hooks/useAdmin";
 import { toast } from "react-hot-toast";
+import { format } from "date-fns";
+import KOTView from "@/components/admin/kot-view";
+import BillView from "@/components/admin/bill-view";
 
 // ✨ Using GLOBAL CSS VARIABLES - Change colors in app/globals.css
 const statusConfig = {
@@ -56,6 +72,9 @@ const statusConfig = {
 export default function TablesPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [qrSheetOpen, setQrSheetOpen] = useState(false);
+  const [billSheetOpen, setBillSheetOpen] = useState(false);
+  const [kotViewOpen, setKotViewOpen] = useState(false);
+  const [billViewOpen, setBillViewOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState(null);
   const [formData, setFormData] = useState({
     table_number: "",
@@ -68,6 +87,36 @@ export default function TablesPage() {
   const { tables, isLoading, mutate } = useTables({}, 10000);
   const { restaurants } = useRestaurants();
   const { createTable, updateTable, deleteTable } = useTableMutations();
+
+  // Fetch served orders for the selected table (only when table is selected)
+  const billFilters =
+    selectedTable && (billSheetOpen || billViewOpen)
+      ? { tableId: selectedTable.id, status: "served" }
+      : null;
+  const { orders: servedOrders, isLoading: ordersLoading } = useOrders(
+    billFilters,
+    5,
+    0
+  );
+
+  // Fetch active orders for KOT view (orders that are not completed/cancelled)
+  // Note: We'll fetch all orders for the table and filter client-side
+  const kotFilters =
+    selectedTable && kotViewOpen ? { tableId: selectedTable.id } : null;
+  const { orders: allTableOrders, isLoading: kotOrdersLoading } = useOrders(
+    kotFilters,
+    5,
+    0
+  );
+
+  // Filter orders for KOT (exclude completed and cancelled)
+  const kotOrders =
+    allTableOrders?.filter(
+      (order) =>
+        !["completed", "cancelled", "rejected"].includes(
+          order.attributes.status
+        )
+    ) || [];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -130,6 +179,96 @@ export default function TablesPage() {
   const handleShowQR = (table) => {
     setSelectedTable(table);
     setQrSheetOpen(true);
+  };
+
+  const handleViewBill = (table) => {
+    setSelectedTable(table);
+    setBillSheetOpen(true);
+  };
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
+    }).format(value || 0);
+  };
+
+  const calculateOrderTotal = (orderItems) => {
+    if (!orderItems?.data) return 0;
+    return orderItems.data.reduce((total, item) => {
+      const quantity = parseFloat(item.attributes.quantity) || 0;
+      const price = parseFloat(item.attributes.price) || 0;
+      return total + quantity * price;
+    }, 0);
+  };
+
+  const calculateGrandTotal = () => {
+    if (!servedOrders || servedOrders.length === 0) return 0;
+    return servedOrders.reduce((total, order) => {
+      return total + calculateOrderTotal(order.attributes.order_items);
+    }, 0);
+  };
+
+  // Transform orders data for KOT/Bill views
+  const transformOrdersForView = (orders) => {
+    if (!orders || orders.length === 0) return [];
+
+    const allItems = [];
+    orders.forEach((order) => {
+      const orderItems = order.attributes.order_items?.data || [];
+      orderItems.forEach((item) => {
+        const menuItem = item.attributes.menu_item?.data;
+        const existingItem = allItems.find(
+          (i) =>
+            i.id === menuItem?.id?.toString() ||
+            i.name === menuItem?.attributes?.name
+        );
+
+        if (existingItem) {
+          existingItem.quantity += parseFloat(item.attributes.quantity) || 0;
+        } else {
+          allItems.push({
+            id: menuItem?.id?.toString() || item.id.toString(),
+            name: menuItem?.attributes?.name || "Unknown Item",
+            price: parseFloat(item.attributes.price) || 0,
+            quantity: parseFloat(item.attributes.quantity) || 0,
+          });
+        }
+      });
+    });
+
+    return allItems;
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleViewKOT = (table) => {
+    setSelectedTable(table);
+    setKotViewOpen(true);
+  };
+
+  const handleViewBillFromKOT = () => {
+    setKotViewOpen(false);
+    setBillViewOpen(true);
+  };
+
+  const handleBackFromKOT = () => {
+    setKotViewOpen(false);
+    setSelectedTable(null);
+  };
+
+  const handleBackFromBill = () => {
+    setBillViewOpen(false);
+    setBillSheetOpen(false);
+    setSelectedTable(null);
+  };
+
+  const handleViewBillFromSheet = () => {
+    setBillSheetOpen(false);
+    setBillViewOpen(true);
   };
 
   const resetForm = () => {
@@ -277,15 +416,31 @@ export default function TablesPage() {
                   </p>
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewKOT(table)}
+                    className="flex-1"
+                  >
+                    <ChefHat className="w-4 h-4 mr-2" />
+                    View KOT
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewBill(table)}
+                    className="flex-1"
+                  >
+                    <Receipt className="w-4 h-4 mr-2" />
+                    View Bill
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleShowQR(table)}
-                    className="flex-1"
                   >
-                    <QrCode className="w-4 h-4 mr-2" />
-                    QR Code
+                    <QrCode className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="outline"
@@ -466,6 +621,168 @@ export default function TablesPage() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Bill Sheet */}
+      <Sheet open={billSheetOpen} onOpenChange={setBillSheetOpen}>
+        <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>
+              Bill - Table {selectedTable?.attributes.table_number}
+            </SheetTitle>
+            <SheetDescription>
+              View all served orders and total bill for this table
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="mt-6 space-y-6">
+            {ordersLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : servedOrders && servedOrders.length > 0 ? (
+              <>
+                {/* Orders List */}
+                <div className="space-y-4">
+                  {servedOrders.map((order) => {
+                    const orderAttrs = order.attributes;
+                    const orderItems = orderAttrs.order_items?.data || [];
+                    const orderTotal = calculateOrderTotal(
+                      orderAttrs.order_items
+                    );
+
+                    return (
+                      <Card
+                        key={order.id}
+                        className="border-l-4 border-l-blue-500"
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-semibold text-lg">
+                                {orderAttrs.order_number}
+                              </h4>
+                              <p className="text-sm text-gray-500">
+                                {format(new Date(orderAttrs.createdAt), "PPp")}
+                              </p>
+                            </div>
+                            <Badge className="bg-muted text-muted-foreground">
+                              Served
+                            </Badge>
+                          </div>
+
+                          {/* Order Items */}
+                          <div className="space-y-2 mb-3">
+                            {orderItems.map((item) => {
+                              const menuItem = item.attributes.menu_item?.data;
+                              const quantity = parseFloat(
+                                item.attributes.quantity
+                              );
+                              const price = parseFloat(item.attributes.price);
+
+                              return (
+                                <div
+                                  key={item.id}
+                                  className="flex justify-between items-start text-sm"
+                                >
+                                  <div className="flex-1">
+                                    <p className="font-medium">
+                                      {menuItem?.attributes?.name ||
+                                        "Unknown Item"}
+                                    </p>
+                                    <p className="text-gray-500">
+                                      {quantity} × {formatCurrency(price)}
+                                    </p>
+                                  </div>
+                                  <p className="font-semibold">
+                                    {formatCurrency(quantity * price)}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Order Total */}
+                          <div className="border-t pt-2 flex justify-between items-center">
+                            <span className="font-semibold">Order Total:</span>
+                            <span className="font-bold text-lg">
+                              {formatCurrency(orderTotal)}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+
+                {/* Grand Total */}
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xl font-bold text-gray-900">
+                        Grand Total:
+                      </span>
+                      <span className="text-2xl font-bold text-blue-600">
+                        {formatCurrency(calculateGrandTotal())}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Total for {servedOrders.length} served order
+                      {servedOrders.length !== 1 ? "s" : ""}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* View Full Bill Button */}
+                <div className="mt-4">
+                  <Button
+                    onClick={handleViewBillFromSheet}
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Receipt className="w-4 h-4 mr-2" />
+                    View Full Bill
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <Card>
+                <CardContent className="py-12">
+                  <div className="text-center">
+                    <Receipt className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">
+                      No served orders found for this table
+                    </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                      Orders with status "served" will appear here
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* KOT View */}
+      {kotViewOpen && selectedTable && (
+        <KOTView
+          tableNumber={selectedTable.attributes.table_number}
+          orders={transformOrdersForView(kotOrders)}
+          onPrint={handlePrint}
+          onViewBill={handleViewBillFromKOT}
+          onBack={handleBackFromKOT}
+        />
+      )}
+
+      {/* Bill View */}
+      {billViewOpen && selectedTable && (
+        <BillView
+          tableNumber={selectedTable.attributes.table_number}
+          orders={transformOrdersForView(servedOrders)}
+          onPrint={handlePrint}
+          onBack={handleBackFromBill}
+        />
+      )}
     </div>
   );
 }
