@@ -572,7 +572,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
           </div>
         </div>
       </motion.header>
-      <div className=" flex md:hidden justify-center py-2 items-center gap-3">
+      {/* <div className=" flex md:hidden justify-center py-2 items-center gap-3">
         <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200/50">
           <button
             onClick={() => setViewMode("grid")}
@@ -611,7 +611,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             <EyeOff className="w-4 h-4" />
           )}
         </button>
-      </div>
+      </div> */}
 
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/50 px-4 py-4 shadow-sm">
         <div className="relative max-w-md mx-auto">
@@ -650,7 +650,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
             ))}
           </div>
 
-          <div className="md:flex hidden items-center gap-3">
+          {/* <div className="md:flex hidden items-center gap-3">
             <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-gray-200/50">
               <button
                 onClick={() => setViewMode("grid")}
@@ -689,7 +689,7 @@ export default function RestaurantMenuClient({ restaurantId, tableId }) {
                 <EyeOff className="w-4 h-4" />
               )}
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 

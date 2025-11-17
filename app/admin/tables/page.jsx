@@ -24,6 +24,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -252,18 +259,19 @@ export default function TablesPage() {
 
   const handleViewBillFromKOT = () => {
     setKotViewOpen(false);
-    setBillViewOpen(true);
+    // Small delay to ensure smooth transition
+    setTimeout(() => {
+      setBillViewOpen(true);
+    }, 100);
   };
 
   const handleBackFromKOT = () => {
     setKotViewOpen(false);
-    setSelectedTable(null);
   };
 
   const handleBackFromBill = () => {
     setBillViewOpen(false);
     setBillSheetOpen(false);
-    setSelectedTable(null);
   };
 
   const handleViewBillFromSheet = () => {
@@ -763,26 +771,80 @@ export default function TablesPage() {
         </SheetContent>
       </Sheet>
 
-      {/* KOT View */}
-      {kotViewOpen && selectedTable && (
-        <KOTView
-          tableNumber={selectedTable.attributes.table_number}
-          orders={transformOrdersForView(kotOrders)}
-          onPrint={handlePrint}
-          onViewBill={handleViewBillFromKOT}
-          onBack={handleBackFromKOT}
-        />
-      )}
+      {/* KOT View Dialog */}
+      <Dialog
+        open={kotViewOpen}
+        onOpenChange={(open) => {
+          setKotViewOpen(open);
+          if (!open) {
+            // Reset selected table when dialog closes
+            setTimeout(() => {
+              if (!billViewOpen) {
+                setSelectedTable(null);
+              }
+            }, 200);
+          }
+        }}
+      >
+        <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto p-0">
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle>
+              KOT - Table {selectedTable?.attributes.table_number}
+            </DialogTitle>
+            <DialogDescription>
+              Kitchen Order Ticket for this table
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTable && (
+            <div className="px-6 pb-6">
+              <KOTView
+                tableNumber={selectedTable.attributes.table_number}
+                orders={transformOrdersForView(kotOrders)}
+                onPrint={handlePrint}
+                onViewBill={handleViewBillFromKOT}
+                onBack={handleBackFromKOT}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
-      {/* Bill View */}
-      {billViewOpen && selectedTable && (
-        <BillView
-          tableNumber={selectedTable.attributes.table_number}
-          orders={transformOrdersForView(servedOrders)}
-          onPrint={handlePrint}
-          onBack={handleBackFromBill}
-        />
-      )}
+      {/* Bill View Dialog */}
+      <Dialog
+        open={billViewOpen}
+        onOpenChange={(open) => {
+          setBillViewOpen(open);
+          if (!open) {
+            // Reset selected table when dialog closes
+            setTimeout(() => {
+              if (!kotViewOpen) {
+                setSelectedTable(null);
+              }
+            }, 200);
+          }
+        }}
+      >
+        <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto p-0">
+          <DialogHeader className="px-6 pt-6 pb-4">
+            <DialogTitle>
+              Bill - Table {selectedTable?.attributes.table_number}
+            </DialogTitle>
+            <DialogDescription>
+              Invoice and bill details for this table
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTable && (
+            <div className="px-6 pb-6">
+              <BillView
+                tableNumber={selectedTable.attributes.table_number}
+                orders={transformOrdersForView(servedOrders)}
+                onPrint={handlePrint}
+                onBack={handleBackFromBill}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

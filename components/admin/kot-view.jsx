@@ -13,16 +13,16 @@ export default function KOTView({
   const currentTime = new Date().toLocaleString();
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="w-full">
       <div className="max-w-2xl mx-auto">
         {/* Screen View */}
-        <div className="no-print mb-8">
+        <div className="no-print mb-6">
           <div className="flex gap-3 justify-end">
-            <Button variant="outline" onClick={onBack}>
+            <Button variant="outline" onClick={onBack} size="sm">
               Back to Order
             </Button>
-            <Button onClick={onPrint}>Print KOT</Button>
-            <Button onClick={onViewBill} className="bg-primary">
+            <Button onClick={onPrint} size="sm">Print KOT</Button>
+            <Button onClick={onViewBill} className="bg-primary" size="sm">
               View Bill
             </Button>
           </div>

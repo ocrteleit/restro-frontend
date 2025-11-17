@@ -14,15 +14,15 @@ export default function BillView({ tableNumber, orders, onPrint, onBack }) {
   const total = subtotal + tax;
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="w-full">
       <div className="max-w-2xl mx-auto">
         {/* Screen View */}
-        <div className="no-print mb-8">
+        <div className="no-print mb-6">
           <div className="flex gap-3 justify-end">
-            <Button variant="outline" onClick={onBack}>
+            <Button variant="outline" onClick={onBack} size="sm">
               Back
             </Button>
-            <Button onClick={onPrint}>Print Bill</Button>
+            <Button onClick={onPrint} size="sm">Print Bill</Button>
           </div>
         </div>
 
